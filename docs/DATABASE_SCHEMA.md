@@ -122,6 +122,47 @@ Agent names:
 - `ANALYTICS`
 - `DOCUMENTATION`
 
+### LandingPage
+
+Stores generated public landing page sections for one event:
+
+- `hero`
+- `problem`
+- `outcomes`
+- `agenda`
+- `speaker`
+- `benefits`
+- `certificate`
+- `pricing`
+- `faqs`
+- `cta`
+
+### RegistrationForm
+
+Stores a generated public registration form for one event.
+
+Fields include:
+
+- `title`
+- `description`
+- `fields`
+- `status`
+
+`fields` is JSON so the renderer can support dynamic field types.
+
+### Attendee
+
+Stores public registration submissions.
+
+Fields include:
+
+- `eventId`
+- `organizationId`
+- `name`
+- `email`
+- `phone`
+- `responses`
+
 ## Planned Models
 
 - `EventPlan`
@@ -163,3 +204,4 @@ Committed migrations:
 - `prisma/migrations/20260614130000_init`
 - `prisma/migrations/20260614143000_event_briefs`
 - `prisma/migrations/20260614160000_agent_runs`
+- `prisma/migrations/20260614173000_landing_registration_attendees`

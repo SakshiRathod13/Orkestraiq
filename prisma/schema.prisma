@@ -65,6 +65,11 @@ enum AgentApprovalStatus {
   NOT_REQUIRED
 }
 
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+}
+
 model User {
   id            String               @id @default(cuid())
   email         String               @unique
@@ -126,11 +131,66 @@ model Event {
   createdBy      User?         @relation("CreatedEvents", fields: [createdById], references: [id], onDelete: SetNull)
   brief          EventBrief?
   agentRuns      AgentRun[]
+  landingPage    LandingPage?
+  registrationForm RegistrationForm?
+  attendees      Attendee[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
   @@index([status])
   @@index([type])
+}
+
+model LandingPage {
+  id             String        @id @default(cuid())
+  eventId        String        @unique
+  status         PublishStatus @default(PUBLISHED)
+  hero           Json
+  problem        Json
+  outcomes       Json
+  agenda         Json
+  speaker        Json
+  benefits       Json
+  certificate    Json
+  pricing        Json
+  faqs           Json
+  cta            Json
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  event          Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}
+
+model RegistrationForm {
+  id          String        @id @default(cuid())
+  eventId     String        @unique
+  status      PublishStatus @default(PUBLISHED)
+  title       String
+  description String?
+  fields      Json
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  event       Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}
+
+model Attendee {
+  id             String   @id @default(cuid())
+  eventId        String
+  organizationId String
+  name           String
+  email          String
+  phone          String?
+  responses      Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([organizationId])
+  @@unique([eventId, email])
 }
 
 model AgentRun {

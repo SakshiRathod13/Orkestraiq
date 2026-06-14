@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 import {
   BarChart3,
   CalendarDays,
@@ -21,7 +22,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { approveEventBrief, EventBrief, EventSummary, updateEventBrief, useEvent } from "@/lib/api";
+import {
+  approveEventBrief,
+  Attendee,
+  EventBrief,
+  EventSummary,
+  generateLandingPage,
+  generateRegistrationForm,
+  RegistrationField,
+  updateEventBrief,
+  useEvent,
+  useEventAttendees
+} from "@/lib/api";
 
 const eventTypes = ["WORKSHOP", "WEBINAR", "TRAINING", "BOOTCAMP", "COLLEGE_FEST", "ORIENTATION", "PAID_CLASS", "MEETUP", "OTHER"];
 const tabs = ["Overview", "Plan", "Landing Page", "Registration Form", "Marketing", "Meeting", "Attendees", "Analytics", "Agents", "Settings"] as const;
@@ -66,11 +78,11 @@ export function EventDashboardPage({ eventId }: { orgId: string; eventId: string
         <>
           {activeTab === "Overview" ? <OverviewTab event={event.data} /> : null}
           {activeTab === "Plan" ? <PlanTab eventId={eventId} event={event} /> : null}
-          {activeTab === "Landing Page" ? <PlaceholderTab icon={FileText} title="Landing Page" body="Landing page generation and editing will appear here after the landing page agent is connected to publishable page records." /> : null}
-          {activeTab === "Registration Form" ? <PlaceholderTab icon={ClipboardCheck} title="Registration Form" body="Generated registration fields, approval state, and public form preview will appear here." /> : null}
+          {activeTab === "Landing Page" ? <LandingPageTab event={event.data} onRefresh={() => event.refetch()} /> : null}
+          {activeTab === "Registration Form" ? <RegistrationFormTab event={event.data} onRefresh={() => event.refetch()} /> : null}
           {activeTab === "Marketing" ? <PlaceholderTab icon={Megaphone} title="Marketing" body="Campaign drafts, reminders, and channel-specific content will appear here." /> : null}
           {activeTab === "Meeting" ? <PlaceholderTab icon={Video} title="Meeting" body="Meeting provider setup, venue details, and calendar instructions will appear here." /> : null}
-          {activeTab === "Attendees" ? <PlaceholderTab icon={Users} title="Attendees" body="Registration and attendee management will appear here once public forms are implemented." /> : null}
+          {activeTab === "Attendees" ? <AttendeesTab eventId={eventId} /> : null}
           {activeTab === "Analytics" ? <PlaceholderTab icon={BarChart3} title="Analytics" body="Registration funnel, revenue, conversion, attendance, and campaign analytics will appear here." /> : null}
           {activeTab === "Agents" ? <PlaceholderTab icon={Sparkles} title="Agents" body="Agent run activity, approval queues, retry controls, and generated outputs will appear here." /> : null}
           {activeTab === "Settings" ? <PlaceholderTab icon={Settings} title="Settings" body="Event configuration, publishing controls, and ownership settings will appear here." /> : null}
@@ -83,13 +95,14 @@ export function EventDashboardPage({ eventId }: { orgId: string; eventId: string
 function OverviewTab({ event }: { event: EventSummary }) {
   const checklist = buildLaunchChecklist(event);
   const targetParticipants = event.capacity ?? event.brief?.targetAttendees ?? 0;
+  const registrations = event._count?.attendees ?? event.attendees?.length ?? 0;
 
   return (
     <div className="grid gap-6">
       <div className="grid gap-4 md:grid-cols-5">
         <MetricCard label="Status" value={event.status} />
         <MetricCard label="Target participants" value={targetParticipants || "TBD"} />
-        <MetricCard label="Current registrations" value="0" />
+        <MetricCard label="Current registrations" value={registrations} />
         <MetricCard label="Revenue" value="Placeholder" />
         <MetricCard label="Conversion" value="Placeholder" />
       </div>
@@ -258,6 +271,113 @@ function PlanTab({ eventId, event }: { eventId: string; event: ReturnType<typeof
   );
 }
 
+function LandingPageTab({ event, onRefresh }: { event: EventSummary; onRefresh: () => Promise<unknown> }) {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const publicPath = event.organization ? `/public/events/${event.organization.slug}/${event.slug}` : null;
+
+  async function generate() {
+    setIsGenerating(true);
+    await generateLandingPage(event.id);
+    await onRefresh();
+    setIsGenerating(false);
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <CardTitle>Landing Page</CardTitle>
+          <div className="flex gap-2">
+            <Button type="button" onClick={generate} disabled={isGenerating}>
+              <FileText className="h-4 w-4" />
+              {isGenerating ? "Generating..." : "Generate"}
+            </Button>
+            {publicPath ? <Button asChild><Link href={publicPath}>Open public page</Link></Button> : null}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        {event.landingPage ? (
+          <>
+            <SectionPreview title="Hero" section={event.landingPage.hero} />
+            <SectionPreview title="Problem statement" section={event.landingPage.problem} />
+            <SectionPreview title="Learning outcomes" section={event.landingPage.outcomes} />
+            <SectionPreview title="Agenda" section={event.landingPage.agenda} />
+            <SectionPreview title="Speaker" section={event.landingPage.speaker} />
+            <SectionPreview title="Benefits" section={event.landingPage.benefits} />
+            <SectionPreview title="Certificate" section={event.landingPage.certificate} />
+            <SectionPreview title="Pricing" section={event.landingPage.pricing} />
+            <SectionPreview title="FAQs" section={event.landingPage.faqs} />
+            <SectionPreview title="CTA" section={event.landingPage.cta} />
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">No landing page generated yet.</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function RegistrationFormTab({ event, onRefresh }: { event: EventSummary; onRefresh: () => Promise<unknown> }) {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const publicPath = event.organization ? `/public/events/${event.organization.slug}/${event.slug}/register` : null;
+
+  async function generate() {
+    setIsGenerating(true);
+    await generateRegistrationForm(event.id);
+    await onRefresh();
+    setIsGenerating(false);
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <CardTitle>Registration Form</CardTitle>
+          <div className="flex gap-2">
+            <Button type="button" onClick={generate} disabled={isGenerating}>
+              <ClipboardCheck className="h-4 w-4" />
+              {isGenerating ? "Generating..." : "Generate"}
+            </Button>
+            {publicPath ? <Button asChild><Link href={publicPath}>Open form</Link></Button> : null}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="grid gap-3">
+        {event.registrationForm ? (
+          <>
+            <p className="text-sm text-muted-foreground">{event.registrationForm.description}</p>
+            {event.registrationForm.fields.map((field) => (
+              <FieldPreview key={field.key} field={field} />
+            ))}
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">No registration form generated yet.</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function AttendeesTab({ eventId }: { eventId: string }) {
+  const attendees = useEventAttendees(eventId);
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Attendees</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-3">
+        {attendees.isLoading ? <div className="h-24 animate-pulse rounded-md bg-muted" /> : null}
+        {attendees.data?.length === 0 ? <p className="text-sm text-muted-foreground">No attendee submissions yet.</p> : null}
+        {attendees.data?.map((attendee) => (
+          <AttendeeRow key={attendee.id} attendee={attendee} />
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
 function PlaceholderTab({ icon: Icon, title, body }: { icon: typeof FileText; title: string; body: string }) {
   return (
     <Card>
@@ -269,6 +389,41 @@ function PlaceholderTab({ icon: Icon, title, body }: { icon: typeof FileText; ti
       </CardHeader>
       <CardContent className="text-sm text-muted-foreground">{body}</CardContent>
     </Card>
+  );
+}
+
+function SectionPreview({ title, section }: { title: string; section: Record<string, unknown> }) {
+  return (
+    <div className="rounded-md border border-border p-4">
+      <p className="text-sm font-medium">{title}</p>
+      <pre className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">{JSON.stringify(section, null, 2)}</pre>
+    </div>
+  );
+}
+
+function FieldPreview({ field }: { field: RegistrationField }) {
+  return (
+    <div className="rounded-md border border-border p-3 text-sm">
+      <div className="flex items-center justify-between">
+        <span className="font-medium">{field.label}</span>
+        <Badge>{field.type}</Badge>
+      </div>
+      <p className="mt-1 text-muted-foreground">{field.required ? "Required" : "Optional"}</p>
+    </div>
+  );
+}
+
+function AttendeeRow({ attendee }: { attendee: Attendee }) {
+  return (
+    <div className="rounded-md border border-border p-3 text-sm">
+      <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="font-medium">{attendee.name}</p>
+          <p className="text-muted-foreground">{attendee.email}</p>
+        </div>
+        <span className="text-muted-foreground">{new Date(attendee.createdAt).toLocaleString()}</span>
+      </div>
+    </div>
   );
 }
 
@@ -312,8 +467,8 @@ function buildLaunchChecklist(event: EventSummary) {
     { label: "Mode or location captured", done: Boolean(event.brief?.mode ?? event.venue ?? event.onlineUrl) },
     { label: "Target participants set", done: Boolean(event.capacity ?? event.brief?.targetAttendees) },
     { label: "Agent recommendations reviewed", done: false },
-    { label: "Registration form published", done: false },
-    { label: "Landing page published", done: false }
+    { label: "Registration form published", done: event.registrationForm?.status === "PUBLISHED" },
+    { label: "Landing page published", done: event.landingPage?.status === "PUBLISHED" }
   ];
 }
 

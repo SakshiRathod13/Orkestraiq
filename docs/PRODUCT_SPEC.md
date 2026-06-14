@@ -57,6 +57,11 @@ Milestone 2 provides the first usable event creation workflow:
 - Agent status, retry, and human approval controls
 - Event dashboard with operational tabs
 - Overview status, target participants, registration, revenue, conversion, checklist, and recommendation placeholders
+- Generated landing page sections
+- Public landing page route
+- Public registration page
+- Dynamic JSON registration form renderer
+- Attendee submission storage and dashboard attendee list
 
 ## Event Brief Fields
 
@@ -115,6 +120,25 @@ Overview shows:
 - Conversion placeholder
 - Launch checklist
 - AI recommendations placeholder
+
+## Landing Page Sections
+
+Milestone 5 generates and stores:
+
+- Hero
+- Problem statement
+- Learning outcomes
+- Agenda
+- Speaker
+- Benefits
+- Certificate
+- Pricing
+- FAQs
+- CTA
+
+## Registration
+
+Milestone 5 stores registration form fields as JSON and renders them dynamically on the public registration route. Submissions create attendee records linked to the event and organization.
 
 ## Out of Scope for Current Milestone
 

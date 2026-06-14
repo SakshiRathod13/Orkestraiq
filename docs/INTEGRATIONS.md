@@ -25,6 +25,8 @@ Milestone 2 does not call an AI provider. `PromptBriefExtractorService` is a loc
 
 Milestone 3 agent services also run deterministically. The `AgentRun` table is the integration boundary for future OpenAI-compatible provider execution, retries, approval gates, and live activity streams.
 
+Public registration is stored locally in `Attendee` records. Email confirmation, CRM sync, calendar invites, and payment collection remain future integrations.
+
 ## Email
 
 Planned integration points:

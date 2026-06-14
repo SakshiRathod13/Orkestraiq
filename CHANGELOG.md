@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 - 2026-06-14
+
+- Added generated landing page persistence with hero, problem, outcomes, agenda, speaker, benefits, certificate, pricing, FAQs, and CTA sections.
+- Added generated registration form persistence with dynamic JSON fields.
+- Added public landing and registration routes.
+- Added attendee submission storage and dashboard attendee list.
+- Added dashboard controls to generate landing pages and registration forms.
+
 ## 0.4.0 - 2026-06-14
 
 - Added event dashboard tabs for Overview, Plan, Landing Page, Registration Form, Marketing, Meeting, Attendees, Analytics, Agents, and Settings.

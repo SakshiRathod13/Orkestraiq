@@ -38,6 +38,50 @@ export interface EventBrief {
   missingQuestions: string[];
 }
 
+export interface LandingPageContent {
+  id: string;
+  eventId: string;
+  status: "DRAFT" | "PUBLISHED";
+  hero: Record<string, unknown>;
+  problem: Record<string, unknown>;
+  outcomes: Record<string, unknown>;
+  agenda: Record<string, unknown>;
+  speaker: Record<string, unknown>;
+  benefits: Record<string, unknown>;
+  certificate: Record<string, unknown>;
+  pricing: Record<string, unknown>;
+  faqs: Record<string, unknown>;
+  cta: Record<string, unknown>;
+}
+
+export interface RegistrationField {
+  key: string;
+  label: string;
+  type: "text" | "email" | "phone" | "textarea" | "number" | "select";
+  required: boolean;
+  options?: string[];
+}
+
+export interface RegistrationFormContent {
+  id: string;
+  eventId: string;
+  status: "DRAFT" | "PUBLISHED";
+  title: string;
+  description: string | null;
+  fields: RegistrationField[];
+}
+
+export interface Attendee {
+  id: string;
+  eventId: string;
+  organizationId: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  responses: Record<string, unknown>;
+  createdAt: string;
+}
+
 export interface EventSummary {
   id: string;
   organizationId: string;
@@ -59,6 +103,16 @@ export interface EventSummary {
   createdAt: string;
   updatedAt: string;
   brief?: EventBrief | null;
+  landingPage?: LandingPageContent | null;
+  registrationForm?: RegistrationFormContent | null;
+  attendees?: Attendee[];
+  _count?: {
+    attendees: number;
+  };
+  organization?: {
+    slug: string;
+    name: string;
+  };
 }
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
@@ -133,5 +187,40 @@ export function approveEventBrief(eventId: string, payload: Record<string, unkno
   return apiRequest<EventBrief>(`/events/${eventId}/brief/approve`, {
     method: "POST",
     body: JSON.stringify({ ...payload, approve: true })
+  });
+}
+
+export function generateLandingPage(eventId: string) {
+  return apiRequest<LandingPageContent>(`/events/${eventId}/landing-page/generate`, {
+    method: "POST"
+  });
+}
+
+export function generateRegistrationForm(eventId: string) {
+  return apiRequest<RegistrationFormContent>(`/events/${eventId}/registration-form/generate`, {
+    method: "POST"
+  });
+}
+
+export function useEventAttendees(eventId: string) {
+  return useQuery({
+    queryKey: ["event-attendees", eventId],
+    queryFn: () => apiGet<Attendee[]>(`/events/${eventId}/attendees`),
+    enabled: Boolean(eventId)
+  });
+}
+
+export function usePublicEvent(orgSlug: string, eventSlug: string) {
+  return useQuery({
+    queryKey: ["public-event", orgSlug, eventSlug],
+    queryFn: () => apiGet<EventSummary>(`/events/public/${orgSlug}/${eventSlug}`),
+    enabled: Boolean(orgSlug && eventSlug)
+  });
+}
+
+export function submitPublicRegistration(orgSlug: string, eventSlug: string, payload: Record<string, unknown>) {
+  return apiRequest<Attendee>(`/events/public/${orgSlug}/${eventSlug}/register`, {
+    method: "POST",
+    body: JSON.stringify(payload)
   });
 }

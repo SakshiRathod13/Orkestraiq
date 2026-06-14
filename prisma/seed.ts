@@ -4,6 +4,9 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.agentRun.deleteMany();
+  await prisma.attendee.deleteMany();
+  await prisma.registrationForm.deleteMany();
+  await prisma.landingPage.deleteMany();
   await prisma.eventBrief.deleteMany();
   await prisma.event.deleteMany();
   await prisma.organizationMember.deleteMany();

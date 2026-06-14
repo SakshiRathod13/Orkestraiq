@@ -64,6 +64,13 @@ After seeding, open `/dashboard`, then use the organization event count or creat
 
 The event detail route `/organizations/:orgId/events/:eventId` opens the event dashboard. Use the Plan tab to continue brief approval; other tabs are placeholders for upcoming generated assets and operational data.
 
+Use the Landing Page and Registration Form tabs to generate public assets. Public routes use organization and event slugs:
+
+```text
+/public/events/:orgSlug/:eventSlug
+/public/events/:orgSlug/:eventSlug/register
+```
+
 To exercise an agent after creating or seeding an event:
 
 ```bash

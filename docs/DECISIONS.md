@@ -59,3 +59,15 @@ Reason: This gives the product a working agent contract and persistence layer be
 Decision: Add placeholder tabs for Landing Page, Registration Form, Marketing, Meeting, Attendees, Analytics, Agents, and Settings before their full data models are implemented.
 
 Reason: The event dashboard is the product shell for future milestones. Stable tabs make the demo navigable now and give each upcoming feature a clear destination.
+
+## 2026-06-14: Store generated pages and forms as JSON sections
+
+Decision: Store landing page sections and registration fields as JSON in dedicated one-to-one event models.
+
+Reason: The generated assets need to support varied event types before a richer page/form builder schema exists. Dedicated models keep the public routes stable while preserving flexibility.
+
+## 2026-06-14: Upsert attendee submissions by event and email
+
+Decision: Public registrations update an existing attendee when the same email registers for the same event.
+
+Reason: This prevents duplicate attendee rows during demos while keeping submission storage simple.

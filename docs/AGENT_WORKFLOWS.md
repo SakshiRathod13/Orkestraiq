@@ -145,3 +145,5 @@ Human approval is required by default for generated outputs.
 ## Dashboard Surface
 
 Milestone 4 reserves an Agents tab on the event dashboard. The current tab is a placeholder; future work should render `AgentRun` status, outputs, retry controls, and human approval actions there.
+
+Milestone 5 connects deterministic generated landing page and registration form records to the dashboard. Future agent work should write approved Landing Page Agent and Form Agent outputs into these same models.

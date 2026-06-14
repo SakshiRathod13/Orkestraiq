@@ -79,6 +79,8 @@ Returns an event with its organization and creator.
 
 Used by the event dashboard Overview and Plan tabs.
 
+Milestone 5 also includes landing page, registration form, attendee preview, and attendee count data.
+
 ### `GET /events/:eventId/brief`
 
 Returns the structured event brief and original prompt.
@@ -178,6 +180,54 @@ Request:
 ### `POST /agent-runs/:runId/reject`
 
 Marks an agent run as rejected by a human.
+
+## Landing Page and Registration
+
+### `POST /events/:eventId/landing-page/generate`
+
+Generates or regenerates landing page sections:
+
+- Hero
+- Problem statement
+- Learning outcomes
+- Agenda
+- Speaker
+- Benefits
+- Certificate
+- Pricing
+- FAQs
+- CTA
+
+### `POST /events/:eventId/registration-form/generate`
+
+Generates or regenerates the event registration form with dynamic JSON fields.
+
+### `GET /events/:eventId/attendees`
+
+Returns attendee submissions for the event dashboard.
+
+### `GET /events/public/:orgSlug/:eventSlug`
+
+Returns the public event with landing page and registration form data.
+
+### `POST /events/public/:orgSlug/:eventSlug/register`
+
+Stores a public attendee submission.
+
+Request:
+
+```json
+{
+  "name": "Ada Lovelace",
+  "email": "ada@example.com",
+  "phone": "9999999999",
+  "responses": {
+    "name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "organization": "Northstar College"
+  }
+}
+```
 
 ## Validation
 

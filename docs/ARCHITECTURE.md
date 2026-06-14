@@ -18,6 +18,8 @@ Milestone 3 adds modular agent services and `AgentRun` persistence. Each agent a
 
 Milestone 4 adds the event dashboard shell. The event detail route now uses tabbed navigation so generated assets, operational records, analytics, agent runs, and settings can land in stable product surfaces as the backend models arrive.
 
+Milestone 5 adds generated landing pages, dynamic registration forms, public event routes, and attendee submissions. `LandingPage` and `RegistrationForm` are one-to-one with `Event`; `Attendee` records are many-to-one with `Event`.
+
 ## System Boundaries
 
 The frontend never talks directly to the database. It calls the NestJS API using typed contracts. The API owns validation, tenancy checks, persistence, and later background workflow dispatch.
@@ -75,6 +77,8 @@ User prompt
 - `/organizations/:orgId/events`: organization event list.
 - `/organizations/:orgId/events/new`: natural-language event prompt.
 - `/organizations/:orgId/events/:eventId`: event dashboard with tabs.
+- `/public/events/:orgSlug/:eventSlug`: public landing page.
+- `/public/events/:orgSlug/:eventSlug/register`: public registration form.
 
 Event dashboard tabs:
 
