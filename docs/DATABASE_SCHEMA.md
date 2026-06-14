@@ -163,6 +163,25 @@ Fields include:
 - `phone`
 - `responses`
 
+### MarketingDraft
+
+Stores approval-required marketing outputs for one event.
+
+Fields include:
+
+- `approvalStatus`
+- `emailCampaign`
+- `whatsappMessages`
+- `linkedInPost`
+- `instagramCaption`
+- `reminderSequence`
+- `posterPrompt`
+- `certificateTemplate`
+- `approvedAt`
+- `approvedBy`
+- `rejectedAt`
+- `rejectedBy`
+
 ## Planned Models
 
 - `EventPlan`
@@ -205,3 +224,4 @@ Committed migrations:
 - `prisma/migrations/20260614143000_event_briefs`
 - `prisma/migrations/20260614160000_agent_runs`
 - `prisma/migrations/20260614173000_landing_registration_attendees`
+- `prisma/migrations/20260614190000_marketing_drafts`

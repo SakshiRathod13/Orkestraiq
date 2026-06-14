@@ -202,6 +202,28 @@ Generates or regenerates landing page sections:
 
 Generates or regenerates the event registration form with dynamic JSON fields.
 
+### `POST /events/:eventId/marketing/generate`
+
+Generates approval-required marketing drafts. No messages are sent.
+
+Outputs include:
+
+- Email campaign drafts
+- WhatsApp message drafts
+- LinkedIn post
+- Instagram caption
+- Reminder sequence
+- Poster prompt
+- Certificate template metadata
+
+### `POST /events/:eventId/marketing/approve`
+
+Marks the marketing draft as approved.
+
+### `POST /events/:eventId/marketing/reject`
+
+Marks the marketing draft as rejected.
+
 ### `GET /events/:eventId/attendees`
 
 Returns attendee submissions for the event dashboard.

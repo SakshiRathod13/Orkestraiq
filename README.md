@@ -23,6 +23,7 @@ This repository is initialized as a documentation-first TypeScript monorepo with
 - Modular planning agents with persisted runs, retry, status, and human approval
 - Event dashboard with Overview, Plan, Landing Page, Registration Form, Marketing, Meeting, Attendees, Analytics, Agents, and Settings tabs
 - Generated public landing pages and dynamic registration forms with attendee submissions
+- Approval-required marketing drafts for email, WhatsApp, LinkedIn, Instagram, reminders, poster prompts, and certificate metadata
 
 ## Requirements
 
@@ -81,6 +82,9 @@ Primary agent endpoints:
 - `POST /agent-runs/:runId/reject`
 - `POST /events/:eventId/landing-page/generate`
 - `POST /events/:eventId/registration-form/generate`
+- `POST /events/:eventId/marketing/generate`
+- `POST /events/:eventId/marketing/approve`
+- `POST /events/:eventId/marketing/reject`
 - `GET /events/public/:orgSlug/:eventSlug`
 - `POST /events/public/:orgSlug/:eventSlug/register`
 

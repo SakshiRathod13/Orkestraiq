@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import { ReviewMarketingDraftDto } from "./dto/review-marketing-draft.dto.js";
 import { SubmitRegistrationDto } from "./dto/submit-registration.dto.js";
 import { UpdateEventBriefDto } from "./dto/update-event-brief.dto.js";
 import { EventsService } from "./events.service.js";
@@ -6,6 +7,20 @@ import { EventsService } from "./events.service.js";
 @Controller("events")
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
+
+  @Get("public/:orgSlug/:eventSlug")
+  findPublicEvent(@Param("orgSlug") orgSlug: string, @Param("eventSlug") eventSlug: string) {
+    return this.eventsService.findPublicEvent(orgSlug, eventSlug);
+  }
+
+  @Post("public/:orgSlug/:eventSlug/register")
+  submitRegistration(
+    @Param("orgSlug") orgSlug: string,
+    @Param("eventSlug") eventSlug: string,
+    @Body() dto: SubmitRegistrationDto
+  ) {
+    return this.eventsService.submitRegistration(orgSlug, eventSlug, dto);
+  }
 
   @Get(":eventId")
   findOne(@Param("eventId") eventId: string) {
@@ -42,17 +57,18 @@ export class EventsController {
     return this.eventsService.generateRegistrationForm(eventId);
   }
 
-  @Get("public/:orgSlug/:eventSlug")
-  findPublicEvent(@Param("orgSlug") orgSlug: string, @Param("eventSlug") eventSlug: string) {
-    return this.eventsService.findPublicEvent(orgSlug, eventSlug);
+  @Post(":eventId/marketing/generate")
+  generateMarketingDraft(@Param("eventId") eventId: string) {
+    return this.eventsService.generateMarketingDraft(eventId);
   }
 
-  @Post("public/:orgSlug/:eventSlug/register")
-  submitRegistration(
-    @Param("orgSlug") orgSlug: string,
-    @Param("eventSlug") eventSlug: string,
-    @Body() dto: SubmitRegistrationDto
-  ) {
-    return this.eventsService.submitRegistration(orgSlug, eventSlug, dto);
+  @Post(":eventId/marketing/approve")
+  approveMarketingDraft(@Param("eventId") eventId: string, @Body() dto: ReviewMarketingDraftDto) {
+    return this.eventsService.approveMarketingDraft(eventId, dto);
+  }
+
+  @Post(":eventId/marketing/reject")
+  rejectMarketingDraft(@Param("eventId") eventId: string, @Body() dto: ReviewMarketingDraftDto) {
+    return this.eventsService.rejectMarketingDraft(eventId, dto);
   }
 }

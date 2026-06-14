@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0 - 2026-06-14
+
+- Added approval-required marketing draft generation.
+- Added email campaign drafts, WhatsApp message drafts, LinkedIn post, Instagram caption, reminder sequence, poster prompt, and certificate template metadata.
+- Added marketing draft approve and reject actions.
+- Kept marketing outputs as drafts only with no message sending.
+
 ## 0.5.0 - 2026-06-14
 
 - Added generated landing page persistence with hero, problem, outcomes, agenda, speaker, benefits, certificate, pricing, FAQs, and CTA sections.

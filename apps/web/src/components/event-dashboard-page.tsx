@@ -28,8 +28,11 @@ import {
   EventBrief,
   EventSummary,
   generateLandingPage,
+  generateMarketingDraft,
   generateRegistrationForm,
+  approveMarketingDraft,
   RegistrationField,
+  rejectMarketingDraft,
   updateEventBrief,
   useEvent,
   useEventAttendees
@@ -80,7 +83,7 @@ export function EventDashboardPage({ eventId }: { orgId: string; eventId: string
           {activeTab === "Plan" ? <PlanTab eventId={eventId} event={event} /> : null}
           {activeTab === "Landing Page" ? <LandingPageTab event={event.data} onRefresh={() => event.refetch()} /> : null}
           {activeTab === "Registration Form" ? <RegistrationFormTab event={event.data} onRefresh={() => event.refetch()} /> : null}
-          {activeTab === "Marketing" ? <PlaceholderTab icon={Megaphone} title="Marketing" body="Campaign drafts, reminders, and channel-specific content will appear here." /> : null}
+          {activeTab === "Marketing" ? <MarketingTab event={event.data} onRefresh={() => event.refetch()} /> : null}
           {activeTab === "Meeting" ? <PlaceholderTab icon={Video} title="Meeting" body="Meeting provider setup, venue details, and calendar instructions will appear here." /> : null}
           {activeTab === "Attendees" ? <AttendeesTab eventId={eventId} /> : null}
           {activeTab === "Analytics" ? <PlaceholderTab icon={BarChart3} title="Analytics" body="Registration funnel, revenue, conversion, attendance, and campaign analytics will appear here." /> : null}
@@ -373,6 +376,70 @@ function AttendeesTab({ eventId }: { eventId: string }) {
         {attendees.data?.map((attendee) => (
           <AttendeeRow key={attendee.id} attendee={attendee} />
         ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function MarketingTab({ event, onRefresh }: { event: EventSummary; onRefresh: () => Promise<unknown> }) {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isReviewing, setIsReviewing] = useState(false);
+
+  async function generate() {
+    setIsGenerating(true);
+    await generateMarketingDraft(event.id);
+    await onRefresh();
+    setIsGenerating(false);
+  }
+
+  async function review(action: "approve" | "reject") {
+    setIsReviewing(true);
+    if (action === "approve") {
+      await approveMarketingDraft(event.id);
+    } else {
+      await rejectMarketingDraft(event.id);
+    }
+    await onRefresh();
+    setIsReviewing(false);
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <CardTitle>Marketing Assets</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">Drafts only. No messages are sent.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" onClick={generate} disabled={isGenerating}>
+              <Megaphone className="h-4 w-4" />
+              {isGenerating ? "Generating..." : "Generate drafts"}
+            </Button>
+            {event.marketingDraft ? (
+              <>
+                <Button type="button" onClick={() => review("approve")} disabled={isReviewing}>Approve</Button>
+                <Button type="button" onClick={() => review("reject")} disabled={isReviewing}>Reject</Button>
+              </>
+            ) : null}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        {event.marketingDraft ? (
+          <>
+            <Badge>{event.marketingDraft.approvalStatus}</Badge>
+            <SectionPreview title="Email campaign drafts" section={event.marketingDraft.emailCampaign} />
+            <SectionPreview title="WhatsApp message drafts" section={event.marketingDraft.whatsappMessages} />
+            <SectionPreview title="LinkedIn post" section={event.marketingDraft.linkedInPost} />
+            <SectionPreview title="Instagram caption" section={event.marketingDraft.instagramCaption} />
+            <SectionPreview title="Reminder sequence" section={event.marketingDraft.reminderSequence} />
+            <SectionPreview title="Poster prompt" section={event.marketingDraft.posterPrompt} />
+            <SectionPreview title="Certificate template metadata" section={event.marketingDraft.certificateTemplate} />
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">No marketing drafts generated yet.</p>
+        )}
       </CardContent>
     </Card>
   );

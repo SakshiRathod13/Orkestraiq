@@ -82,6 +82,21 @@ export interface Attendee {
   createdAt: string;
 }
 
+export interface MarketingDraft {
+  id: string;
+  eventId: string;
+  approvalStatus: "PENDING" | "APPROVED" | "REJECTED" | "NOT_REQUIRED";
+  emailCampaign: Record<string, unknown>;
+  whatsappMessages: Record<string, unknown>;
+  linkedInPost: Record<string, unknown>;
+  instagramCaption: Record<string, unknown>;
+  reminderSequence: Record<string, unknown>;
+  posterPrompt: Record<string, unknown>;
+  certificateTemplate: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface EventSummary {
   id: string;
   organizationId: string;
@@ -105,6 +120,7 @@ export interface EventSummary {
   brief?: EventBrief | null;
   landingPage?: LandingPageContent | null;
   registrationForm?: RegistrationFormContent | null;
+  marketingDraft?: MarketingDraft | null;
   attendees?: Attendee[];
   _count?: {
     attendees: number;
@@ -199,6 +215,26 @@ export function generateLandingPage(eventId: string) {
 export function generateRegistrationForm(eventId: string) {
   return apiRequest<RegistrationFormContent>(`/events/${eventId}/registration-form/generate`, {
     method: "POST"
+  });
+}
+
+export function generateMarketingDraft(eventId: string) {
+  return apiRequest<MarketingDraft>(`/events/${eventId}/marketing/generate`, {
+    method: "POST"
+  });
+}
+
+export function approveMarketingDraft(eventId: string) {
+  return apiRequest<MarketingDraft>(`/events/${eventId}/marketing/approve`, {
+    method: "POST",
+    body: JSON.stringify({ reviewer: "program-owner" })
+  });
+}
+
+export function rejectMarketingDraft(eventId: string) {
+  return apiRequest<MarketingDraft>(`/events/${eventId}/marketing/reject`, {
+    method: "POST",
+    body: JSON.stringify({ reviewer: "program-owner" })
   });
 }
 

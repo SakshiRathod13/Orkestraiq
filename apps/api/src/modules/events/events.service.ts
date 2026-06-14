@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { EventBriefStatus, EventStatus, Prisma } from "@prisma/client";
+import { AgentApprovalStatus, EventBriefStatus, EventStatus, Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateEventDto } from "./dto/create-event.dto.js";
 import { CreateEventFromPromptDto } from "./dto/create-event-from-prompt.dto.js";
+import { ReviewMarketingDraftDto } from "./dto/review-marketing-draft.dto.js";
 import { SubmitRegistrationDto } from "./dto/submit-registration.dto.js";
 import { UpdateEventBriefDto } from "./dto/update-event-brief.dto.js";
 import { PromptBriefExtractorService } from "./prompt-brief-extractor.service.js";
@@ -31,6 +32,7 @@ export class EventsService {
         brief: true,
         landingPage: true,
         registrationForm: true,
+        marketingDraft: true,
         attendees: {
           orderBy: { createdAt: "desc" },
           take: 50
@@ -329,6 +331,58 @@ export class EventsService {
     });
   }
 
+  async generateMarketingDraft(eventId: string) {
+    const event = await this.ensureEventWithBrief(eventId);
+    const data = this.buildMarketingDraftData({
+      title: event.title,
+      audience: event.audience ?? event.brief?.targetAudience ?? null,
+      goal: event.objective ?? event.brief?.goal ?? null,
+      dateTimeText: event.brief?.dateTimeText ?? null,
+      priceCents: event.priceCents ?? event.brief?.priceCents ?? null,
+      currency: event.currency
+    });
+
+    return this.prisma.marketingDraft.upsert({
+      where: { eventId },
+      update: {
+        ...data,
+        approvalStatus: AgentApprovalStatus.PENDING,
+        approvedAt: null,
+        approvedBy: null,
+        rejectedAt: null,
+        rejectedBy: null
+      },
+      create: {
+        eventId,
+        ...data
+      }
+    });
+  }
+
+  async approveMarketingDraft(eventId: string, dto: ReviewMarketingDraftDto) {
+    await this.ensureEvent(eventId);
+    return this.prisma.marketingDraft.update({
+      where: { eventId },
+      data: {
+        approvalStatus: AgentApprovalStatus.APPROVED,
+        approvedAt: new Date(),
+        approvedBy: dto.reviewer ?? "human"
+      }
+    });
+  }
+
+  async rejectMarketingDraft(eventId: string, dto: ReviewMarketingDraftDto) {
+    await this.ensureEvent(eventId);
+    return this.prisma.marketingDraft.update({
+      where: { eventId },
+      data: {
+        approvalStatus: AgentApprovalStatus.REJECTED,
+        rejectedAt: new Date(),
+        rejectedBy: dto.reviewer ?? "human"
+      }
+    });
+  }
+
   private async createUniqueSlug(organizationId: string, title: string) {
     const base = title
       .toLowerCase()
@@ -452,6 +506,75 @@ export class EventsService {
         { key: "organization", label: "College or organization", type: "text", required: false },
         { key: "expectation", label: "What do you want from this event?", type: "textarea", required: false }
       ] as Prisma.InputJsonValue
+    };
+  }
+
+  private buildMarketingDraftData(input: {
+    title: string;
+    audience: string | null;
+    goal: string | null;
+    dateTimeText: string | null;
+    priceCents: number | null;
+    currency: string;
+  }): Omit<Prisma.MarketingDraftCreateInput, "event"> {
+    const audience = input.audience ?? "interested attendees";
+    const goal = input.goal ?? "learn practical skills";
+    const price = input.priceCents === 0 ? "free" : input.priceCents ? `${input.currency} ${(input.priceCents / 100).toLocaleString("en-IN")}` : "priced by the organizer";
+
+    return {
+      emailCampaign: {
+        status: "draft",
+        drafts: [
+          {
+            subject: `You're invited: ${input.title}`,
+            preview: `A focused event for ${audience}.`,
+            body: `Hi there,\n\nJoin ${input.title} to ${goal}. The event is ${price}${input.dateTimeText ? ` and scheduled for ${input.dateTimeText}` : ""}.\n\nReserve your spot and bring your questions.\n\nTeam Orchestraiq`
+          },
+          {
+            subject: `Last call for ${input.title}`,
+            preview: "Seats are limited. Register before the event starts.",
+            body: `This is a reminder to register for ${input.title}. It is built for ${audience} and designed to help you ${goal}.`
+          }
+        ]
+      },
+      whatsappMessages: {
+        status: "draft",
+        drafts: [
+          `Registrations are open for ${input.title}. Built for ${audience}. Register now to ${goal}.`,
+          `Reminder: ${input.title}${input.dateTimeText ? ` is on ${input.dateTimeText}` : " is coming up"}. Save your spot.`
+        ]
+      },
+      linkedInPost: {
+        status: "draft",
+        body: `We are hosting ${input.title} for ${audience}.\n\nThe goal: ${goal}.\n\nRegistrations are now open.`
+      },
+      instagramCaption: {
+        status: "draft",
+        body: `${input.title} is open for registrations. Learn, practice, and leave with clear next steps.\n\n#learning #events #workshop`
+      },
+      reminderSequence: {
+        status: "draft",
+        items: [
+          { timing: "T-7 days", channel: "email", message: "Announce registrations and outcome." },
+          { timing: "T-2 days", channel: "WhatsApp", message: "Share urgency and logistics." },
+          { timing: "T-1 day", channel: "email", message: "Final reminder with joining details." },
+          { timing: "T+1 day", channel: "email", message: "Thank attendees and share next steps." }
+        ]
+      },
+      posterPrompt: {
+        status: "draft",
+        prompt: `Create a clean promotional poster for "${input.title}" targeting ${audience}. Use a modern professional visual style, clear event title, date/time placeholder, and registration CTA.`
+      },
+      certificateTemplate: {
+        status: "draft",
+        metadata: {
+          title: "Certificate of Participation",
+          recipientPlaceholder: "{{attendee_name}}",
+          eventTitle: input.title,
+          issuer: "Organization name",
+          fields: ["attendee_name", "event_title", "completion_date", "certificate_id"]
+        }
+      }
     };
   }
 

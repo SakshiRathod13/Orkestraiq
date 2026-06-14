@@ -20,6 +20,8 @@ Milestone 4 adds the event dashboard shell. The event detail route now uses tabb
 
 Milestone 5 adds generated landing pages, dynamic registration forms, public event routes, and attendee submissions. `LandingPage` and `RegistrationForm` are one-to-one with `Event`; `Attendee` records are many-to-one with `Event`.
 
+Milestone 6 adds `MarketingDraft`, another one-to-one event asset. Drafts are approval-gated and intentionally do not send messages or call external messaging providers.
+
 ## System Boundaries
 
 The frontend never talks directly to the database. It calls the NestJS API using typed contracts. The API owns validation, tenancy checks, persistence, and later background workflow dispatch.

@@ -71,3 +71,9 @@ Reason: The generated assets need to support varied event types before a richer 
 Decision: Public registrations update an existing attendee when the same email registers for the same event.
 
 Reason: This prevents duplicate attendee rows during demos while keeping submission storage simple.
+
+## 2026-06-14: Keep marketing assets as approval-required drafts
+
+Decision: Generate marketing content into `MarketingDraft` records and require human approval before any future send workflow.
+
+Reason: Marketing outputs can affect public communication. The product should make review explicit before integrations send email, WhatsApp, or social posts.

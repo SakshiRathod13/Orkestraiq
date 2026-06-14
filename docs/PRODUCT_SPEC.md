@@ -62,6 +62,7 @@ Milestone 2 provides the first usable event creation workflow:
 - Public registration page
 - Dynamic JSON registration form renderer
 - Attendee submission storage and dashboard attendee list
+- Approval-required marketing asset drafts
 
 ## Event Brief Fields
 
@@ -139,6 +140,20 @@ Milestone 5 generates and stores:
 ## Registration
 
 Milestone 5 stores registration form fields as JSON and renders them dynamically on the public registration route. Submissions create attendee records linked to the event and organization.
+
+## Marketing Assets
+
+Milestone 6 generates drafts only:
+
+- Email campaign drafts
+- WhatsApp message drafts
+- LinkedIn post
+- Instagram caption
+- Reminder sequence
+- Poster prompt
+- Certificate template metadata
+
+Drafts require approval and are never sent by the system.
 
 ## Out of Scope for Current Milestone
 

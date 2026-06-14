@@ -133,12 +133,35 @@ model Event {
   agentRuns      AgentRun[]
   landingPage    LandingPage?
   registrationForm RegistrationForm?
+  marketingDraft MarketingDraft?
   attendees      Attendee[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
   @@index([status])
   @@index([type])
+}
+
+model MarketingDraft {
+  id                  String              @id @default(cuid())
+  eventId             String              @unique
+  approvalStatus      AgentApprovalStatus @default(PENDING)
+  emailCampaign       Json
+  whatsappMessages    Json
+  linkedInPost        Json
+  instagramCaption    Json
+  reminderSequence    Json
+  posterPrompt        Json
+  certificateTemplate Json
+  approvedAt          DateTime?
+  approvedBy          String?
+  rejectedAt          DateTime?
+  rejectedBy          String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  event               Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([approvalStatus])
 }
 
 model LandingPage {

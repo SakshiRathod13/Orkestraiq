@@ -27,6 +27,8 @@ Milestone 3 agent services also run deterministically. The `AgentRun` table is t
 
 Public registration is stored locally in `Attendee` records. Email confirmation, CRM sync, calendar invites, and payment collection remain future integrations.
 
+Marketing drafts are stored locally and are not sent. Email, WhatsApp, LinkedIn, Instagram, and certificate providers remain future integrations behind approval gates.
+
 ## Email
 
 Planned integration points:
