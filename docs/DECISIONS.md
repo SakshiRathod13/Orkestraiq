@@ -89,3 +89,15 @@ Reason: Payment and attendance/check-in workflows do not exist yet, but the dash
 Decision: Render agent run buttons, logs, timeline, retry, and approval controls in the event dashboard Agents tab.
 
 Reason: Operators need one command center per event before live streaming and background queues are added.
+
+## 2026-06-14: Add integration interfaces before provider SDKs
+
+Decision: Define provider interfaces for Gmail, Google Calendar, Google Meet, Zoom, Razorpay, Stripe, and WhatsApp Business before adding concrete SDK clients.
+
+Reason: The app needs clean service boundaries and no hardcoded secrets before real integrations are wired.
+
+## 2026-06-14: Implement operation tables ahead of workflows
+
+Decision: Add Campaign, MessageLog, Payment, Meeting, Task, AnalyticsSnapshot, Integration, and AuditLog now.
+
+Reason: Upcoming workflows need stable persistence targets, and the schema documents the intended production architecture.

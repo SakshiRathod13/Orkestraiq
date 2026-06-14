@@ -183,23 +183,37 @@ Fields include:
 - `rejectedAt`
 - `rejectedBy`
 
-## Planned Models
+### Campaign
 
-- `EventPlan`
-- `LandingPage`
-- `RegistrationForm`
-- `RegistrationQuestion`
-- `RegistrationSubmission`
-- `Attendee`
-- `Campaign`
-- `CampaignMessage`
-- `MeetingDetails`
-- `AgentRun`
-- `AgentLog`
-- `PromptTemplate`
-- `Integration`
-- `IntegrationCredential`
-- `AnalyticsEvent`
+Stores approval-gated campaign drafts by channel.
+
+### MessageLog
+
+Stores draft, queued, sent, or failed outbound message records. Current milestone does not send messages.
+
+### Payment
+
+Stores future Razorpay or Stripe payment state.
+
+### Meeting
+
+Stores future Google Meet, Zoom, offline, or custom meeting details.
+
+### Task
+
+Stores operator or agent-generated tasks.
+
+### AnalyticsSnapshot
+
+Stores point-in-time analytics metrics for reporting history.
+
+### Integration
+
+Stores organization-level provider status and non-secret config for Gmail, Google Calendar, Google Meet, Zoom, Razorpay, Stripe, and WhatsApp Business.
+
+### AuditLog
+
+Stores important product actions for operational traceability.
 
 ## Tenancy Rules
 
@@ -227,3 +241,4 @@ Committed migrations:
 - `prisma/migrations/20260614173000_landing_registration_attendees`
 - `prisma/migrations/20260614190000_marketing_drafts`
 - `prisma/migrations/20260614203000_analytics_source_tracking`
+- `prisma/migrations/20260614220000_integration_operations_models`

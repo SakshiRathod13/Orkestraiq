@@ -65,6 +65,8 @@ Milestone 2 provides the first usable event creation workflow:
 - Approval-required marketing asset drafts
 - Analytics dashboard with computed and placeholder metrics
 - Agent command center with logs, timeline, retry, and approval status
+- Integration placeholders for Gmail, Google Calendar, Google Meet, Zoom, Razorpay, Stripe, and WhatsApp Business API
+- Left-sidebar command-center navigation
 
 ## Event Brief Fields
 
@@ -106,7 +108,7 @@ Milestone 4 event dashboard tabs:
 - Overview
 - Plan
 - Landing Page
-- Registration Form
+- Form
 - Marketing
 - Meeting
 - Attendees
@@ -171,6 +173,30 @@ Milestone 7 shows:
 - Agent timeline
 - Retry failed agent run
 - Approval status and approval actions
+
+## UX Principles
+
+- Do not show a long boring form first.
+- Start with a natural language prompt.
+- Then use progressive clarification questions.
+- Always show generated output before launch.
+- Use human approval gates before publishing or sending.
+- Show agent activity transparently.
+- Make the product feel like a command center, not a chatbot.
+
+## Integration Placeholders
+
+Milestone 8 defines clean interfaces for:
+
+- Gmail
+- Google Calendar
+- Google Meet
+- Zoom
+- Razorpay
+- Stripe
+- WhatsApp Business API
+
+No secrets are hardcoded. Runtime configuration must come from environment variables and organization `Integration` records.
 
 ## Out of Scope for Current Milestone
 

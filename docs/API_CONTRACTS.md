@@ -271,3 +271,7 @@ Request:
 ## Validation
 
 NestJS validation pipes reject unknown fields and invalid DTOs. Shared Zod contracts live in `packages/shared` for frontend and future agent validation.
+
+## Integration Contracts
+
+Milestone 8 adds TypeScript provider interfaces in `packages/integrations`. No external integration endpoints are active yet. Future API routes should use `Integration` records and provider interfaces for Gmail, Google Calendar, Google Meet, Zoom, Razorpay, Stripe, and WhatsApp Business API.

@@ -46,7 +46,7 @@ import {
 } from "@/lib/api";
 
 const eventTypes = ["WORKSHOP", "WEBINAR", "TRAINING", "BOOTCAMP", "COLLEGE_FEST", "ORIENTATION", "PAID_CLASS", "MEETUP", "OTHER"];
-const tabs = ["Overview", "Plan", "Landing Page", "Registration Form", "Marketing", "Meeting", "Attendees", "Analytics", "Agents", "Settings"] as const;
+const tabs = ["Overview", "Plan", "Landing Page", "Form", "Marketing", "Meeting", "Attendees", "Analytics", "Agents", "Settings"] as const;
 const commandCenterAgents = ["COO", "EVENT_PLANNER", "FORM", "LANDING_PAGE", "MARKETING", "DESIGN", "MEETING", "ANALYTICS", "DOCUMENTATION"];
 
 export function EventDashboardPage({ eventId }: { orgId: string; eventId: string }) {
@@ -90,7 +90,7 @@ export function EventDashboardPage({ eventId }: { orgId: string; eventId: string
           {activeTab === "Overview" ? <OverviewTab event={event.data} /> : null}
           {activeTab === "Plan" ? <PlanTab eventId={eventId} event={event} /> : null}
           {activeTab === "Landing Page" ? <LandingPageTab event={event.data} onRefresh={() => event.refetch()} /> : null}
-          {activeTab === "Registration Form" ? <RegistrationFormTab event={event.data} onRefresh={() => event.refetch()} /> : null}
+          {activeTab === "Form" ? <RegistrationFormTab event={event.data} onRefresh={() => event.refetch()} /> : null}
           {activeTab === "Marketing" ? <MarketingTab event={event.data} onRefresh={() => event.refetch()} /> : null}
           {activeTab === "Meeting" ? <PlaceholderTab icon={Video} title="Meeting" body="Meeting provider setup, venue details, and calendar instructions will appear here." /> : null}
           {activeTab === "Attendees" ? <AttendeesTab eventId={eventId} /> : null}

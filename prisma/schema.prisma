@@ -70,6 +70,75 @@ enum PublishStatus {
   PUBLISHED
 }
 
+enum CampaignStatus {
+  DRAFT
+  APPROVAL_REQUIRED
+  APPROVED
+  SCHEDULED
+  SENT
+  CANCELLED
+}
+
+enum MessageChannel {
+  EMAIL
+  WHATSAPP
+  LINKEDIN
+  INSTAGRAM
+  SMS
+}
+
+enum MessageStatus {
+  DRAFT
+  APPROVAL_REQUIRED
+  APPROVED
+  QUEUED
+  SENT
+  FAILED
+}
+
+enum PaymentProvider {
+  RAZORPAY
+  STRIPE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum MeetingProvider {
+  GOOGLE_MEET
+  ZOOM
+  OFFLINE
+  OTHER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  DONE
+}
+
+enum IntegrationProvider {
+  GMAIL
+  GOOGLE_CALENDAR
+  GOOGLE_MEET
+  ZOOM
+  RAZORPAY
+  STRIPE
+  WHATSAPP_BUSINESS
+}
+
+enum IntegrationStatus {
+  NOT_CONFIGURED
+  CONFIGURED
+  NEEDS_REAUTH
+  DISABLED
+}
+
 model User {
   id            String               @id @default(cuid())
   email         String               @unique
@@ -90,6 +159,8 @@ model Organization {
   members     OrganizationMember[]
   events      Event[]
   agentRuns   AgentRun[]
+  integrations Integration[]
+  auditLogs   AuditLog[]
 }
 
 model OrganizationMember {
@@ -135,11 +206,173 @@ model Event {
   registrationForm RegistrationForm?
   marketingDraft MarketingDraft?
   attendees      Attendee[]
+  campaigns      Campaign[]
+  messageLogs    MessageLog[]
+  payments       Payment[]
+  meeting        Meeting?
+  tasks          Task[]
+  analyticsSnapshots AnalyticsSnapshot[]
+  auditLogs      AuditLog[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
   @@index([status])
   @@index([type])
+}
+
+model Campaign {
+  id             String         @id @default(cuid())
+  organizationId String
+  eventId        String
+  name           String
+  status         CampaignStatus @default(DRAFT)
+  channel        MessageChannel
+  draftContent   Json
+  approvedAt     DateTime?
+  approvedBy     String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  event          Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  messages       MessageLog[]
+
+  @@index([organizationId])
+  @@index([eventId])
+  @@index([status])
+  @@index([channel])
+}
+
+model MessageLog {
+  id             String         @id @default(cuid())
+  organizationId String
+  eventId        String
+  campaignId     String?
+  channel        MessageChannel
+  status         MessageStatus  @default(DRAFT)
+  recipient      String?
+  subject        String?
+  body           String
+  provider       IntegrationProvider?
+  providerMessageId String?
+  error          String?
+  sentAt         DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  event          Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  campaign       Campaign?      @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([eventId])
+  @@index([campaignId])
+  @@index([status])
+  @@index([channel])
+}
+
+model Payment {
+  id                String          @id @default(cuid())
+  organizationId    String
+  eventId           String
+  attendeeId        String?
+  provider          PaymentProvider
+  status            PaymentStatus   @default(PENDING)
+  amountCents       Int
+  currency          String          @default("INR")
+  providerPaymentId String?
+  metadata          Json            @default("{}")
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  event             Event           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([eventId])
+  @@index([attendeeId])
+  @@index([provider])
+  @@index([status])
+}
+
+model Meeting {
+  id             String          @id @default(cuid())
+  organizationId String
+  eventId        String          @unique
+  provider       MeetingProvider
+  title          String
+  joinUrl        String?
+  calendarEventId String?
+  startAt        DateTime?
+  endAt          DateTime?
+  metadata       Json            @default("{}")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  event          Event           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([provider])
+}
+
+model Task {
+  id             String     @id @default(cuid())
+  organizationId String
+  eventId        String?
+  title          String
+  description    String?
+  owner          String?
+  status         TaskStatus @default(TODO)
+  dueAt          DateTime?
+  sourceAgentRunId String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  event          Event?     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([eventId])
+  @@index([status])
+}
+
+model AnalyticsSnapshot {
+  id             String   @id @default(cuid())
+  organizationId String
+  eventId        String
+  metrics        Json
+  createdAt      DateTime @default(now())
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([eventId])
+  @@index([createdAt])
+}
+
+model Integration {
+  id             String              @id @default(cuid())
+  organizationId String
+  provider       IntegrationProvider
+  status         IntegrationStatus   @default(NOT_CONFIGURED)
+  config         Json                @default("{}")
+  credentialRef  String?
+  lastCheckedAt  DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  organization   Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, provider])
+  @@index([status])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String
+  eventId        String?
+  actorId        String?
+  action         String
+  entityType     String
+  entityId       String?
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event          Event?   @relation(fields: [eventId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId])
+  @@index([eventId])
+  @@index([action])
+  @@index([createdAt])
 }
 
 model MarketingDraft {

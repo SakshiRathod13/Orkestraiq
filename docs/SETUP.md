@@ -73,6 +73,8 @@ Use the Landing Page and Registration Form tabs to generate public assets. Publi
 
 The Analytics tab reads `/events/:eventId/analytics`. The Agents tab can run modular agents, retry failed runs, and approve or reject pending outputs.
 
+Integration variables are listed in `.env.example`. Leave them blank for local development unless you are implementing a concrete provider client.
+
 To exercise an agent after creating or seeding an event:
 
 ```bash

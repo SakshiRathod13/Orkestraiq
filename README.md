@@ -26,6 +26,8 @@ This repository is initialized as a documentation-first TypeScript monorepo with
 - Approval-required marketing drafts for email, WhatsApp, LinkedIn, Instagram, reminders, poster prompts, and certificate metadata
 - Analytics dashboard with registration funnel, source tracking, revenue and attendance placeholders
 - Agent command center with timeline, logs, retry, and approval controls
+- Integration interfaces and operation tables for email, calendar, meetings, payments, WhatsApp, audits, tasks, and analytics snapshots
+- Left-sidebar command-center navigation
 
 ## Requirements
 
@@ -65,13 +67,25 @@ Event dashboard tabs:
 - Overview
 - Plan
 - Landing Page
-- Registration Form
+- Form
 - Marketing
 - Meeting
 - Attendees
 - Analytics
 - Agents
 - Settings
+
+Command-center sidebar:
+
+- Dashboard
+- Events
+- Campaigns
+- Attendees
+- Payments
+- Agent Runs
+- Templates
+- Integrations
+- Organization Settings
 
 Primary agent endpoints:
 

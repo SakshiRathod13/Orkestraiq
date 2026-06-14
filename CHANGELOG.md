@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 - 2026-06-14
+
+- Added integration provider interfaces for Gmail, Google Calendar, Google Meet, Zoom, Razorpay, Stripe, and WhatsApp Business API.
+- Added environment placeholders for integration credentials without hardcoded secrets.
+- Added operational database models for campaigns, message logs, payments, meetings, tasks, analytics snapshots, integrations, and audit logs.
+- Added left-sidebar command-center navigation.
+- Updated event dashboard tab naming and documented UX principles.
+
 ## 0.7.0 - 2026-06-14
 
 - Added event analytics API and dashboard tab with computed registration metrics.

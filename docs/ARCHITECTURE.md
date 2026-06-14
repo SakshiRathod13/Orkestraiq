@@ -24,6 +24,8 @@ Milestone 6 adds `MarketingDraft`, another one-to-one event asset. Drafts are ap
 
 Milestone 7 adds an analytics read endpoint and an event dashboard command center for agent runs. Analytics combines real registration counts and source tracking with placeholder revenue and attendance until those workflows exist.
 
+Milestone 8 adds operation tables and integration contracts. Provider-specific code must depend on interfaces from `packages/integrations`; application services should read organization `Integration` records and resolve secrets through credential references, never hardcoded keys.
+
 ## System Boundaries
 
 The frontend never talks directly to the database. It calls the NestJS API using typed contracts. The API owns validation, tenancy checks, persistence, and later background workflow dispatch.
@@ -89,7 +91,7 @@ Event dashboard tabs:
 - Overview
 - Plan
 - Landing Page
-- Registration Form
+- Form
 - Marketing
 - Meeting
 - Attendees
@@ -98,6 +100,20 @@ Event dashboard tabs:
 - Settings
 
 The Plan tab contains the existing event brief review and approval wizard.
+
+## Command Center Navigation
+
+Left sidebar entries:
+
+- Dashboard
+- Events
+- Campaigns
+- Attendees
+- Payments
+- Agent Runs
+- Templates
+- Integrations
+- Organization Settings
 
 ## Agent Run Lifecycle
 

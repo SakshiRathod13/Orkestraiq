@@ -2,6 +2,7 @@
 
 import { CalendarDays, CheckCircle2, ClipboardList, Sparkles, Users } from "lucide-react";
 import Link from "next/link";
+import { AppShell } from "@/components/app-shell";
 import { useOrganizations } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,9 +13,9 @@ export function OrganizationDashboard() {
   const organization = organizations.data?.[0];
 
   return (
-    <main className="min-h-screen">
-      <section className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-8 md:flex-row md:items-center md:justify-between">
+    <AppShell>
+      <section className="rounded-lg border border-border bg-card">
+        <div className="flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-medium text-muted-foreground">OpsPilot Command Center</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal">Orchestraiq</h1>
@@ -34,7 +35,7 @@ export function OrganizationDashboard() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-6 py-8">
+      <section className="grid gap-6 py-8">
         {organizations.isLoading ? <DashboardSkeleton /> : null}
         {organizations.isError ? (
           <Card>
@@ -86,7 +87,7 @@ export function OrganizationDashboard() {
           </>
         ) : null}
       </section>
-    </main>
+    </AppShell>
   );
 }
 

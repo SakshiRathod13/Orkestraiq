@@ -2,7 +2,9 @@
 
 ## Current Integration State
 
-The current integration layer includes placeholders only. No third-party API keys are required to run the foundation.
+The current integration layer includes provider interfaces and environment placeholders only. No third-party API keys are required to run the app.
+
+Provider interfaces live in `packages/integrations`.
 
 ## AI Providers
 
@@ -31,31 +33,79 @@ Marketing drafts are stored locally and are not sent. Email, WhatsApp, LinkedIn,
 
 Analytics currently combines real registration data with placeholders. Payment revenue, attendance check-in, and source attribution integrations can replace placeholders later.
 
-## Email
+## Gmail
 
-Planned integration points:
+Interface: `EmailProvider`
+
+Planned flow:
+
+- Organization connects Gmail through OAuth.
+- Access tokens are stored outside source control and referenced by `Integration.credentialRef`.
+- Approved email drafts create Gmail drafts first.
+- Sending remains a future explicit action.
+
+Environment placeholders:
+
+- `GMAIL_CLIENT_ID`
+- `GMAIL_CLIENT_SECRET`
+- `GMAIL_REDIRECT_URI`
+
+Integration points:
 
 - Campaign email drafts
 - Registration confirmations
 - Reminder emails
 - Post-event follow-ups
 
-Candidate providers can be added later behind an integration service boundary.
-
 ## Calendar and Meetings
 
 Planned integration points:
 
-- Google Calendar
-- Microsoft Outlook
-- Zoom
-- Google Meet
+- Google Calendar creates calendar events.
+- Google Meet creates meeting links through calendar/Meet-compatible provider flow.
+- Zoom creates online meetings through OAuth/server-to-server credentials.
 
 Meeting details are not implemented yet but are represented in the product architecture.
 
+Environment placeholders:
+
+- `GOOGLE_CALENDAR_CLIENT_ID`
+- `GOOGLE_CALENDAR_CLIENT_SECRET`
+- `GOOGLE_CALENDAR_REDIRECT_URI`
+- `GOOGLE_MEET_CLIENT_ID`
+- `GOOGLE_MEET_CLIENT_SECRET`
+- `ZOOM_CLIENT_ID`
+- `ZOOM_CLIENT_SECRET`
+- `ZOOM_ACCOUNT_ID`
+
 ## Payments
 
-Paid classes and bootcamps will need payment collection and reconciliation. Payment integration is out of scope for the current milestone.
+Interfaces: `PaymentProvider`
+
+Razorpay and Stripe will support checkout creation, webhook verification, reconciliation, refunds, and dashboard status updates. Current `Payment` records are placeholders for those workflows.
+
+Environment placeholders:
+
+- `RAZORPAY_KEY_ID`
+- `RAZORPAY_KEY_SECRET`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+
+## WhatsApp Business API
+
+Interface: `WhatsAppBusinessProvider`
+
+Approved WhatsApp drafts will later become provider message drafts or template sends. No WhatsApp message is sent in the current product.
+
+Environment placeholders:
+
+- `WHATSAPP_BUSINESS_PHONE_NUMBER_ID`
+- `WHATSAPP_BUSINESS_ACCESS_TOKEN`
+- `WHATSAPP_BUSINESS_WEBHOOK_VERIFY_TOKEN`
+
+## Integration Records
+
+`Integration` stores organization-level provider status, non-secret config, and a credential reference. Secret values must live in an external secret store or environment-managed runtime, not in database config JSON.
 
 ## Redis and Queues
 
