@@ -1,6 +1,7 @@
 "use client";
 
 import { CalendarDays, CheckCircle2, ClipboardList, Sparkles, Users } from "lucide-react";
+import Link from "next/link";
 import { useOrganizations } from "@/lib/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,10 +23,14 @@ export function OrganizationDashboard() {
               analyzes, and documents it.
             </p>
           </div>
-          <Button>
-            <Sparkles className="h-4 w-4" />
-            New event prompt
-          </Button>
+          {organization ? (
+            <Button asChild>
+              <Link href={`/organizations/${organization.id}/events/new`}>
+                <Sparkles className="h-4 w-4" />
+                New event prompt
+              </Link>
+            </Button>
+          ) : null}
         </div>
       </section>
 
@@ -46,7 +51,9 @@ export function OrganizationDashboard() {
           <>
             <div className="grid gap-4 md:grid-cols-3">
               <MetricCard icon={Users} label="Organization" value={organization.name} />
-              <MetricCard icon={CalendarDays} label="Events" value={organization._count.events} />
+              <Link href={`/organizations/${organization.id}/events`}>
+                <MetricCard icon={CalendarDays} label="Events" value={organization._count.events} />
+              </Link>
               <MetricCard icon={CheckCircle2} label="Members" value={organization._count.members} />
             </div>
 
@@ -57,16 +64,16 @@ export function OrganizationDashboard() {
                     <CardTitle>Foundation workspace</CardTitle>
                     <p className="mt-1 text-sm text-muted-foreground">{organization.description}</p>
                   </div>
-                  <Badge>Milestone 1</Badge>
+                  <Badge>Milestone 2</Badge>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 md:grid-cols-2">
                   {[
                     "Multi-tenant organization model",
-                    "Event model for workshops, webinars, trainings, bootcamps, and more",
-                    "Prisma-backed API contracts",
-                    "Agent workflow architecture documented"
+                    "Prompt-to-event brief intake",
+                    "Progressive missing-field wizard",
+                    "Approved event brief persistence"
                   ].map((item) => (
                     <div key={item} className="flex items-center gap-3 rounded-md border border-border p-3">
                       <ClipboardList className="h-4 w-4 text-primary" />

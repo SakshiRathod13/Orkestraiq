@@ -31,6 +31,8 @@ Extracts structured details from a free-form prompt:
 - Location or online format
 - Pricing and capacity hints
 
+Milestone 2 implements this as a deterministic `PromptBriefExtractorService`. It stores the original prompt, extracts the structured fields, and writes missing questions for the progressive wizard. This keeps the product flow usable before provider-backed AI execution is added.
+
 ### Event Planner Agent
 
 Creates an operational plan:
@@ -105,4 +107,4 @@ Prompt templates should be stored with:
 
 ## Execution Plan
 
-Milestone 1 includes only the `packages/ai` contracts and docs. Future milestones will add provider implementations, persisted `AgentRun` and `AgentLog` models, BullMQ workers, and live SSE/WebSocket activity streams.
+Milestone 2 includes prompt intake persistence and brief approval. Future milestones will add provider implementations, persisted `AgentRun` and `AgentLog` models, BullMQ workers, and live SSE/WebSocket activity streams.

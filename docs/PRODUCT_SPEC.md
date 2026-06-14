@@ -35,9 +35,9 @@ The system must support many event types, including:
 - Meetup
 - Other custom event types
 
-## Milestone 1 Product Scope
+## Milestone 2 Product Scope
 
-Milestone 1 provides the operating foundation:
+Milestone 2 provides the first usable event creation workflow:
 
 - Organization model
 - User and membership placeholder model
@@ -46,8 +46,32 @@ Milestone 1 provides the operating foundation:
 - Basic organization dashboard
 - Basic organization and event API endpoints
 - Documentation set
+- Organization event list
+- Natural-language event prompt intake
+- Original prompt storage
+- Structured event brief generation
+- Extracted field review
+- Missing question wizard
+- Approved brief persistence
 
-## Out of Scope for Milestone 1
+## Event Brief Fields
+
+The event brief captures:
+
+- Event type
+- Topic
+- Target audience
+- Mode
+- Location
+- Date/time
+- Duration
+- Price
+- Target attendees
+- Language
+- Tone
+- Goal
+
+## Out of Scope for Current Milestone
 
 - Real authentication
 - AI generation execution

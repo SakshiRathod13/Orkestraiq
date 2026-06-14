@@ -4,13 +4,15 @@
 
 Orchestraiq is a multi-tenant event operations platform. One organization can manage many events, and every event can later own planning outputs, landing pages, registration forms, campaigns, meeting details, attendees, analytics, and agent logs.
 
-Milestone 1 establishes the foundation:
+The foundation includes:
 
 - `apps/web`: Next.js application for the organization dashboard and future setup workflows.
 - `apps/api`: NestJS REST API for organization and event operations.
 - `packages/shared`: shared Zod schemas, enums, and DTO-oriented TypeScript types.
 - `packages/ai`: AI provider and agent workflow contracts.
 - `prisma`: database schema and seed data.
+
+Milestone 2 adds prompt-driven event creation. The API stores the original prompt in `EventBrief`, extracts a structured brief, asks missing questions through the web wizard, and persists the approved brief back onto the event.
 
 ## System Boundaries
 
@@ -51,12 +53,20 @@ Each workflow should persist prompt version, structured output, status, timing, 
 User prompt
   -> Web setup flow
   -> API command endpoint
+  -> Prompt intake extractor
   -> Validation and tenancy guard
   -> Agent orchestration or direct persistence
   -> PostgreSQL records
   -> Web dashboard and live activity stream
 ```
 
-## Milestone 1 Constraints
+## UI Routes
 
-Milestone 1 intentionally avoids full authentication, queues, AI execution, and public publishing. The database and folder structure are designed so those capabilities can be added without reshaping the foundation.
+- `/dashboard`: organization command center.
+- `/organizations/:orgId/events`: organization event list.
+- `/organizations/:orgId/events/new`: natural-language event prompt.
+- `/organizations/:orgId/events/:eventId`: structured brief review and approval wizard.
+
+## Current Constraints
+
+The current prompt extraction service is deterministic and local. It is shaped like the future Event Intake Agent, but it does not call an AI provider yet. Full authentication, queues, public publishing, and live activity streams remain future milestones.

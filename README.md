@@ -6,7 +6,7 @@ Product vision:
 
 > Describe the event once. OpsPilot plans, creates, launches, promotes, manages, analyzes, and documents it.
 
-## Milestone 1 Status
+## Milestone 2 Status
 
 This repository is initialized as a documentation-first TypeScript monorepo with:
 
@@ -17,6 +17,9 @@ This repository is initialized as a documentation-first TypeScript monorepo with
 - Shared Zod contracts in `packages/shared`
 - AI provider and agent contract foundation in `packages/ai`
 - Architecture, product, database, API, integration, setup, and decision docs
+- Organization event list routes
+- Natural-language prompt intake for event creation
+- Structured event brief extraction and approval workflow
 
 ## Requirements
 
@@ -41,6 +44,13 @@ Frontend: `http://localhost:3000`
 Backend: `http://localhost:4000`
 
 Health check: `http://localhost:4000/health`
+
+Primary app routes:
+
+- `/dashboard`
+- `/organizations/:orgId/events`
+- `/organizations/:orgId/events/new`
+- `/organizations/:orgId/events/:eventId`
 
 ## Useful Scripts
 

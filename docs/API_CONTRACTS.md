@@ -57,11 +57,53 @@ Request:
 }
 ```
 
+### `POST /organizations/:orgId/events/from-prompt`
+
+Creates an event from a natural-language prompt, stores the original prompt, and generates a structured draft event brief.
+
+Request:
+
+```json
+{
+  "prompt": "Plan a 2 hour online AI portfolio workshop for final-year engineering students on 20 July at 6 PM. Keep the tone friendly, use English, make it free, target 120 attendees, and help students build one recruiter-ready AI project."
+}
+```
+
+Response includes the created event and its `brief`.
+
 ## Events
 
 ### `GET /events/:eventId`
 
 Returns an event with its organization and creator.
+
+### `GET /events/:eventId/brief`
+
+Returns the structured event brief and original prompt.
+
+### `PATCH /events/:eventId/brief`
+
+Saves wizard progress for extracted or missing fields.
+
+Request fields:
+
+- `eventType`
+- `topic`
+- `targetAudience`
+- `mode`
+- `location`
+- `dateTimeText`
+- `durationMinutes`
+- `priceCents`
+- `currency`
+- `targetAttendees`
+- `language`
+- `tone`
+- `goal`
+
+### `POST /events/:eventId/brief/approve`
+
+Approves the event brief and syncs approved fields back to the event.
 
 ## Planned API Groups
 

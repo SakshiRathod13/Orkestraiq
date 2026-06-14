@@ -61,6 +61,31 @@ Fields include:
 - `priceCents`
 - `currency`
 
+### EventBrief
+
+Stores the original natural-language prompt and the structured event brief extracted from it.
+
+Fields include:
+
+- `eventId`
+- `originalPrompt`
+- `status`
+- `eventType`
+- `topic`
+- `targetAudience`
+- `mode`
+- `location`
+- `dateTimeText`
+- `durationMinutes`
+- `priceCents`
+- `currency`
+- `targetAttendees`
+- `language`
+- `tone`
+- `goal`
+- `missingFields`
+- `missingQuestions`
+
 ## Planned Models
 
 - `EventPlan`
@@ -97,4 +122,7 @@ The seed creates:
 
 ## Migrations
 
-The initial PostgreSQL migration is committed under `prisma/migrations/20260614130000_init`.
+Committed migrations:
+
+- `prisma/migrations/20260614130000_init`
+- `prisma/migrations/20260614143000_event_briefs`

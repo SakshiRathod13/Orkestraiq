@@ -34,6 +34,11 @@ enum EventStatus {
   CANCELLED
 }
 
+enum EventBriefStatus {
+  DRAFT
+  APPROVED
+}
+
 model User {
   id            String               @id @default(cuid())
   email         String               @unique
@@ -92,9 +97,37 @@ model Event {
   updatedAt      DateTime      @updatedAt
   organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdBy      User?         @relation("CreatedEvents", fields: [createdById], references: [id], onDelete: SetNull)
+  brief          EventBrief?
 
   @@unique([organizationId, slug])
   @@index([organizationId])
   @@index([status])
   @@index([type])
+}
+
+model EventBrief {
+  id              String           @id @default(cuid())
+  eventId         String           @unique
+  originalPrompt  String
+  status          EventBriefStatus @default(DRAFT)
+  eventType       EventType?
+  topic           String?
+  targetAudience  String?
+  mode            String?
+  location        String?
+  dateTimeText    String?
+  durationMinutes Int?
+  priceCents      Int?
+  currency        String           @default("INR")
+  targetAttendees Int?
+  language        String?
+  tone            String?
+  goal            String?
+  missingFields   Json             @default("[]")
+  missingQuestions Json            @default("[]")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  event           Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([status])
 }

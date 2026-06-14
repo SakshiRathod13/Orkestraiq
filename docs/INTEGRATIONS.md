@@ -2,7 +2,7 @@
 
 ## Current Integration State
 
-Milestone 1 includes placeholders only. No third-party API keys are required to run the foundation.
+The current integration layer includes placeholders only. No third-party API keys are required to run the foundation.
 
 ## AI Providers
 
@@ -20,6 +20,8 @@ Rules:
 - Never hardcode API keys.
 - Validate structured JSON outputs with Zod.
 - Persist prompt versions before production agent execution.
+
+Milestone 2 does not call an AI provider. `PromptBriefExtractorService` is a local deterministic extractor used to exercise the same product boundary without requiring credentials.
 
 ## Email
 
@@ -41,12 +43,12 @@ Planned integration points:
 - Zoom
 - Google Meet
 
-Meeting details are not implemented in Milestone 1 but are represented in the product architecture.
+Meeting details are not implemented yet but are represented in the product architecture.
 
 ## Payments
 
-Paid classes and bootcamps will need payment collection and reconciliation. Payment integration is out of scope for Milestone 1.
+Paid classes and bootcamps will need payment collection and reconciliation. Payment integration is out of scope for the current milestone.
 
 ## Redis and Queues
 
-Redis is included in Docker Compose for future BullMQ workflows. Milestone 1 does not dispatch background jobs yet.
+Redis is included in Docker Compose for future BullMQ workflows. The current app does not dispatch background jobs yet.

@@ -60,6 +60,8 @@ Health check:
 http://localhost:4000/health
 ```
 
+After seeding, open `/dashboard`, then use the organization event count or create button to reach the event list and prompt intake flow.
+
 ## Verification
 
 ```bash

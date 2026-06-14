@@ -29,3 +29,15 @@ Reason: The data model needs to support real auth later without slowing the foun
 Decision: Do not run `npm audit fix --force` for the remaining Next/PostCSS advisory.
 
 Reason: npm recommends a forced downgrade to Next 9, which would be a larger regression than the moderate advisory in Next's nested build dependency. The project keeps current Next 15 and a root PostCSS override, and this should be revisited when Next publishes a patched dependency tree.
+
+## 2026-06-14: Use deterministic prompt extraction for Milestone 2
+
+Decision: Implement `PromptBriefExtractorService` without calling an external AI provider.
+
+Reason: The event creation product flow needs to be demoable before provider credentials, prompt version storage, retries, and agent logs are introduced. The service has the same boundary the future intake agent will use.
+
+## 2026-06-14: Store event intake in EventBrief
+
+Decision: Store the original prompt and extracted fields in `EventBrief`, linked one-to-one with `Event`.
+
+Reason: The raw prompt should remain auditable, while approved fields can be synced to event columns used by dashboard and list views.
