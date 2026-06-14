@@ -53,3 +53,9 @@ Reason: Agent outputs must be inspectable, retryable, and gated before they affe
 Decision: Implement each requested agent as a modular Nest service returning schema-validated JSON.
 
 Reason: This gives the product a working agent contract and persistence layer before adding BullMQ, streaming updates, provider credentials, and prompt-version execution.
+
+## 2026-06-14: Keep dashboard tabs ahead of backend models
+
+Decision: Add placeholder tabs for Landing Page, Registration Form, Marketing, Meeting, Attendees, Analytics, Agents, and Settings before their full data models are implemented.
+
+Reason: The event dashboard is the product shell for future milestones. Stable tabs make the demo navigable now and give each upcoming feature a clear destination.

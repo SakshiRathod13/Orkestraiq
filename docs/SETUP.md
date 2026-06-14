@@ -62,6 +62,8 @@ http://localhost:4000/health
 
 After seeding, open `/dashboard`, then use the organization event count or create button to reach the event list and prompt intake flow.
 
+The event detail route `/organizations/:orgId/events/:eventId` opens the event dashboard. Use the Plan tab to continue brief approval; other tabs are placeholders for upcoming generated assets and operational data.
+
 To exercise an agent after creating or seeding an event:
 
 ```bash

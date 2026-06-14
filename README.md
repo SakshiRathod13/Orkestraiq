@@ -21,6 +21,7 @@ This repository is initialized as a documentation-first TypeScript monorepo with
 - Natural-language prompt intake for event creation
 - Structured event brief extraction and approval workflow
 - Modular planning agents with persisted runs, retry, status, and human approval
+- Event dashboard with Overview, Plan, Landing Page, Registration Form, Marketing, Meeting, Attendees, Analytics, Agents, and Settings tabs
 
 ## Requirements
 
@@ -52,6 +53,19 @@ Primary app routes:
 - `/organizations/:orgId/events`
 - `/organizations/:orgId/events/new`
 - `/organizations/:orgId/events/:eventId`
+
+Event dashboard tabs:
+
+- Overview
+- Plan
+- Landing Page
+- Registration Form
+- Marketing
+- Meeting
+- Attendees
+- Analytics
+- Agents
+- Settings
 
 Primary agent endpoints:
 

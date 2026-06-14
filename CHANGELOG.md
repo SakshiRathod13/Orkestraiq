@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2026-06-14
+
+- Added event dashboard tabs for Overview, Plan, Landing Page, Registration Form, Marketing, Meeting, Attendees, Analytics, Agents, and Settings.
+- Added Overview metrics for status, target participants, current registrations, revenue placeholder, and conversion placeholder.
+- Added launch checklist and AI recommendations placeholder.
+- Moved the existing event brief approval workflow into the Plan tab.
+
 ## 0.3.0 - 2026-06-14
 
 - Added modular agent services for COO, planning, form, landing page, marketing, design, meeting, analytics, and documentation workflows.

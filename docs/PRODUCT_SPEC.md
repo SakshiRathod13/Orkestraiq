@@ -55,6 +55,8 @@ Milestone 2 provides the first usable event creation workflow:
 - Approved brief persistence
 - Modular AI planning agents
 - Agent status, retry, and human approval controls
+- Event dashboard with operational tabs
+- Overview status, target participants, registration, revenue, conversion, checklist, and recommendation placeholders
 
 ## Event Brief Fields
 
@@ -88,6 +90,31 @@ Milestone 3 agents:
 - Documentation Agent placeholder
 
 Each agent accepts typed event context, returns structured JSON, stores an `AgentRun`, exposes status, supports retry, and requires human approval by default.
+
+## Event Dashboard
+
+Milestone 4 event dashboard tabs:
+
+- Overview
+- Plan
+- Landing Page
+- Registration Form
+- Marketing
+- Meeting
+- Attendees
+- Analytics
+- Agents
+- Settings
+
+Overview shows:
+
+- Status
+- Target participants
+- Current registrations placeholder
+- Revenue placeholder
+- Conversion placeholder
+- Launch checklist
+- AI recommendations placeholder
 
 ## Out of Scope for Current Milestone
 

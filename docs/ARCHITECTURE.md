@@ -16,6 +16,8 @@ Milestone 2 adds prompt-driven event creation. The API stores the original promp
 
 Milestone 3 adds modular agent services and `AgentRun` persistence. Each agent accepts typed context, returns structured JSON, stores run status/output, supports retry, and requires human approval before downstream use.
 
+Milestone 4 adds the event dashboard shell. The event detail route now uses tabbed navigation so generated assets, operational records, analytics, agent runs, and settings can land in stable product surfaces as the backend models arrive.
+
 ## System Boundaries
 
 The frontend never talks directly to the database. It calls the NestJS API using typed contracts. The API owns validation, tenancy checks, persistence, and later background workflow dispatch.
@@ -72,7 +74,22 @@ User prompt
 - `/dashboard`: organization command center.
 - `/organizations/:orgId/events`: organization event list.
 - `/organizations/:orgId/events/new`: natural-language event prompt.
-- `/organizations/:orgId/events/:eventId`: structured brief review and approval wizard.
+- `/organizations/:orgId/events/:eventId`: event dashboard with tabs.
+
+Event dashboard tabs:
+
+- Overview
+- Plan
+- Landing Page
+- Registration Form
+- Marketing
+- Meeting
+- Attendees
+- Analytics
+- Agents
+- Settings
+
+The Plan tab contains the existing event brief review and approval wizard.
 
 ## Agent Run Lifecycle
 

@@ -77,6 +77,8 @@ Response includes the created event and its `brief`.
 
 Returns an event with its organization and creator.
 
+Used by the event dashboard Overview and Plan tabs.
+
 ### `GET /events/:eventId/brief`
 
 Returns the structured event brief and original prompt.

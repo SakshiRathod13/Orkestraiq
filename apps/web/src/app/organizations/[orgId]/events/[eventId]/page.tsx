@@ -1,6 +1,6 @@
-import { EventBriefPage } from "@/components/event-brief-page";
+import { EventDashboardPage } from "@/components/event-dashboard-page";
 
 export default async function EventPage({ params }: { params: Promise<{ orgId: string; eventId: string }> }) {
   const { orgId, eventId } = await params;
-  return <EventBriefPage orgId={orgId} eventId={eventId} />;
+  return <EventDashboardPage orgId={orgId} eventId={eventId} />;
 }

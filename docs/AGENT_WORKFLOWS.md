@@ -141,3 +141,7 @@ Every agent run stores:
 - Timing metadata
 
 Human approval is required by default for generated outputs.
+
+## Dashboard Surface
+
+Milestone 4 reserves an Agents tab on the event dashboard. The current tab is a placeholder; future work should render `AgentRun` status, outputs, retry controls, and human approval actions there.
