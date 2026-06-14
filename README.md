@@ -1,2 +1,76 @@
-# Orkestraiq
-Orkestraiq -  Event Orchestration Platform
+# Orchestraiq
+
+Orchestraiq is an AI-powered operating system for organizations to launch and manage events, workshops, trainings, webinars, college fests, bootcamps, orientations, and paid classes from one prompt.
+
+Product vision:
+
+> Describe the event once. OpsPilot plans, creates, launches, promotes, manages, analyzes, and documents it.
+
+## Milestone 1 Status
+
+This repository is initialized as a documentation-first TypeScript monorepo with:
+
+- Next.js frontend in `apps/web`
+- NestJS backend in `apps/api`
+- PostgreSQL and Redis local services via Docker Compose
+- Prisma schema and seed data
+- Shared Zod contracts in `packages/shared`
+- AI provider and agent contract foundation in `packages/ai`
+- Architecture, product, database, API, integration, setup, and decision docs
+
+## Requirements
+
+- Node.js 22 or newer
+- npm 10 or newer
+- Docker Desktop
+
+## Local Setup
+
+```bash
+npm install
+cp .env.example .env
+docker compose up -d
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
+
+Frontend: `http://localhost:3000`
+
+Backend: `http://localhost:4000`
+
+Health check: `http://localhost:4000/health`
+
+## Useful Scripts
+
+```bash
+npm run dev          # run API and web apps
+npm run build        # build shared packages and apps
+npm run lint         # run type-based lint checks
+npm run test         # run available tests
+npm run db:generate  # generate Prisma client
+npm run db:migrate   # apply local Prisma migrations
+npm run db:seed      # seed demo organization and events
+```
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md)
+- [Product Spec](docs/PRODUCT_SPEC.md)
+- [Agent Workflows](docs/AGENT_WORKFLOWS.md)
+- [Database Schema](docs/DATABASE_SCHEMA.md)
+- [API Contracts](docs/API_CONTRACTS.md)
+- [Integrations](docs/INTEGRATIONS.md)
+- [Decisions](docs/DECISIONS.md)
+- [Setup](docs/SETUP.md)
+- [Changelog](CHANGELOG.md)
+
+## Development Principles
+
+- Plan before implementation.
+- Document before every commit.
+- Keep milestones small and verifiable.
+- Validate inputs at API boundaries.
+- Never commit secrets or hardcoded API keys.
+- Keep organization tenancy explicit in data models and routes.

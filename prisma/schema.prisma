@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum EventType {
+  WORKSHOP
+  WEBINAR
+  TRAINING
+  BOOTCAMP
+  COLLEGE_FEST
+  ORIENTATION
+  PAID_CLASS
+  MEETUP
+  OTHER
+}
+
+enum EventStatus {
+  DRAFT
+  PLANNING
+  READY
+  PUBLISHED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id            String               @id @default(cuid())
+  email         String               @unique
+  name          String
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  memberships   OrganizationMember[]
+  createdEvents Event[]              @relation("CreatedEvents")
+}
+
+model Organization {
+  id          String               @id @default(cuid())
+  name        String
+  slug        String               @unique
+  description String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  members     OrganizationMember[]
+  events      Event[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  userId         String
+  organizationId String
+  role           MemberRole   @default(MEMBER)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organizationId])
+  @@index([organizationId])
+}
+
+model Event {
+  id             String        @id @default(cuid())
+  organizationId String
+  createdById    String?
+  title          String
+  slug           String
+  description    String?
+  type           EventType     @default(WORKSHOP)
+  status         EventStatus   @default(DRAFT)
+  timezone       String        @default("Asia/Kolkata")
+  startAt        DateTime?
+  endAt          DateTime?
+  venue          String?
+  onlineUrl      String?
+  audience       String?
+  objective      String?
+  capacity       Int?
+  priceCents     Int?
+  currency       String        @default("INR")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy      User?         @relation("CreatedEvents", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, slug])
+  @@index([organizationId])
+  @@index([status])
+  @@index([type])
+}
