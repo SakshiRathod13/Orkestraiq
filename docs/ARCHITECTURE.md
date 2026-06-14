@@ -22,6 +22,8 @@ Milestone 5 adds generated landing pages, dynamic registration forms, public eve
 
 Milestone 6 adds `MarketingDraft`, another one-to-one event asset. Drafts are approval-gated and intentionally do not send messages or call external messaging providers.
 
+Milestone 7 adds an analytics read endpoint and an event dashboard command center for agent runs. Analytics combines real registration counts and source tracking with placeholder revenue and attendance until those workflows exist.
+
 ## System Boundaries
 
 The frontend never talks directly to the database. It calls the NestJS API using typed contracts. The API owns validation, tenancy checks, persistence, and later background workflow dispatch.

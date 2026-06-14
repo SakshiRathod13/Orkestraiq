@@ -47,6 +47,11 @@ export class EventsController {
     return this.eventsService.findAttendees(eventId);
   }
 
+  @Get(":eventId/analytics")
+  getAnalytics(@Param("eventId") eventId: string) {
+    return this.eventsService.getAnalytics(eventId);
+  }
+
   @Post(":eventId/landing-page/generate")
   generateLandingPage(@Param("eventId") eventId: string) {
     return this.eventsService.generateLandingPage(eventId);

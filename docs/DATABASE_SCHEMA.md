@@ -161,6 +161,7 @@ Fields include:
 - `name`
 - `email`
 - `phone`
+- `source`
 - `responses`
 
 ### MarketingDraft
@@ -225,3 +226,4 @@ Committed migrations:
 - `prisma/migrations/20260614160000_agent_runs`
 - `prisma/migrations/20260614173000_landing_registration_attendees`
 - `prisma/migrations/20260614190000_marketing_drafts`
+- `prisma/migrations/20260614203000_analytics_source_tracking`

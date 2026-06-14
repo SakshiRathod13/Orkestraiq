@@ -310,6 +310,7 @@ export class EventsService {
       update: {
         name: dto.name,
         phone: dto.phone ?? null,
+        source: dto.source ?? "direct",
         responses: dto.responses as Prisma.InputJsonValue
       },
       create: {
@@ -318,6 +319,7 @@ export class EventsService {
         name: dto.name,
         email: dto.email,
         phone: dto.phone ?? null,
+        source: dto.source ?? "direct",
         responses: dto.responses as Prisma.InputJsonValue
       }
     });
@@ -329,6 +331,54 @@ export class EventsService {
       where: { eventId },
       orderBy: { createdAt: "desc" }
     });
+  }
+
+  async getAnalytics(eventId: string) {
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+      include: {
+        attendees: true,
+        registrationForm: true,
+        landingPage: true,
+        marketingDraft: true,
+        _count: { select: { attendees: true } }
+      }
+    });
+
+    if (!event) {
+      throw new NotFoundException(`Event ${eventId} was not found.`);
+    }
+
+    const registrations = event._count.attendees;
+    const targetParticipants = event.capacity ?? 0;
+    const conversionRate = targetParticipants > 0 ? Math.round((registrations / targetParticipants) * 100) : 0;
+    const sourceBreakdown = event.attendees.reduce<Record<string, number>>((acc, attendee) => {
+      acc[attendee.source] = (acc[attendee.source] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    return {
+      eventId,
+      metrics: {
+        targetParticipants,
+        registrations,
+        conversionRate,
+        revenue: "Placeholder until payment integration",
+        attendance: "Placeholder until check-in workflow"
+      },
+      funnel: [
+        { stage: "Landing page generated", count: event.landingPage ? 1 : 0 },
+        { stage: "Registration form generated", count: event.registrationForm ? 1 : 0 },
+        { stage: "Registrations", count: registrations },
+        { stage: "Attendance", count: 0, placeholder: true }
+      ],
+      attendeeSources: Object.entries(sourceBreakdown).map(([source, count]) => ({ source, count })),
+      readiness: {
+        landingPage: Boolean(event.landingPage),
+        registrationForm: Boolean(event.registrationForm),
+        marketingDraftApproved: event.marketingDraft?.approvalStatus === "APPROVED"
+      }
+    };
   }
 
   async generateMarketingDraft(eventId: string) {

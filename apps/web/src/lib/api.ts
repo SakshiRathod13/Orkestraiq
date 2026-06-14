@@ -78,6 +78,7 @@ export interface Attendee {
   name: string;
   email: string;
   phone: string | null;
+  source: string;
   responses: Record<string, unknown>;
   createdAt: string;
 }
@@ -95,6 +96,43 @@ export interface MarketingDraft {
   certificateTemplate: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface EventAnalytics {
+  eventId: string;
+  metrics: {
+    targetParticipants: number;
+    registrations: number;
+    conversionRate: number;
+    revenue: string;
+    attendance: string;
+  };
+  funnel: Array<{
+    stage: string;
+    count: number;
+    placeholder?: boolean;
+  }>;
+  attendeeSources: Array<{
+    source: string;
+    count: number;
+  }>;
+  readiness: Record<string, boolean>;
+}
+
+export interface AgentRun {
+  id: string;
+  eventId: string | null;
+  agentName: string;
+  status: "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
+  approvalStatus: "PENDING" | "APPROVED" | "REJECTED" | "NOT_REQUIRED";
+  input: Record<string, unknown>;
+  output: Record<string, unknown> | null;
+  error: string | null;
+  attempt: number;
+  retryOfId: string | null;
+  createdAt: string;
+  startedAt: string | null;
+  completedAt: string | null;
 }
 
 export interface EventSummary {
@@ -243,6 +281,49 @@ export function useEventAttendees(eventId: string) {
     queryKey: ["event-attendees", eventId],
     queryFn: () => apiGet<Attendee[]>(`/events/${eventId}/attendees`),
     enabled: Boolean(eventId)
+  });
+}
+
+export function useEventAnalytics(eventId: string) {
+  return useQuery({
+    queryKey: ["event-analytics", eventId],
+    queryFn: () => apiGet<EventAnalytics>(`/events/${eventId}/analytics`),
+    enabled: Boolean(eventId)
+  });
+}
+
+export function useEventAgentRuns(eventId: string) {
+  return useQuery({
+    queryKey: ["event-agent-runs", eventId],
+    queryFn: () => apiGet<AgentRun[]>(`/events/${eventId}/agent-runs`),
+    enabled: Boolean(eventId)
+  });
+}
+
+export function runAgent(eventId: string, agentName: string) {
+  return apiRequest<AgentRun>(`/events/${eventId}/agents/${agentName}/run`, {
+    method: "POST",
+    body: JSON.stringify({ instructions: "Generate a dashboard-ready structured draft." })
+  });
+}
+
+export function retryAgentRun(runId: string) {
+  return apiRequest<AgentRun>(`/agent-runs/${runId}/retry`, {
+    method: "POST"
+  });
+}
+
+export function approveAgentRun(runId: string) {
+  return apiRequest<AgentRun>(`/agent-runs/${runId}/approve`, {
+    method: "POST",
+    body: JSON.stringify({ reviewer: "program-owner" })
+  });
+}
+
+export function rejectAgentRun(runId: string) {
+  return apiRequest<AgentRun>(`/agent-runs/${runId}/reject`, {
+    method: "POST",
+    body: JSON.stringify({ reviewer: "program-owner" })
   });
 }
 

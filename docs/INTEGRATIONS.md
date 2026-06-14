@@ -29,6 +29,8 @@ Public registration is stored locally in `Attendee` records. Email confirmation,
 
 Marketing drafts are stored locally and are not sent. Email, WhatsApp, LinkedIn, Instagram, and certificate providers remain future integrations behind approval gates.
 
+Analytics currently combines real registration data with placeholders. Payment revenue, attendance check-in, and source attribution integrations can replace placeholders later.
+
 ## Email
 
 Planned integration points:

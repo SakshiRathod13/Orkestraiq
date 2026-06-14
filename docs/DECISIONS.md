@@ -77,3 +77,15 @@ Reason: This prevents duplicate attendee rows during demos while keeping submiss
 Decision: Generate marketing content into `MarketingDraft` records and require human approval before any future send workflow.
 
 Reason: Marketing outputs can affect public communication. The product should make review explicit before integrations send email, WhatsApp, or social posts.
+
+## 2026-06-14: Use mixed real and placeholder analytics
+
+Decision: Compute registrations, target comparison, funnel readiness, and source tracking from local data while keeping revenue and attendance as placeholders.
+
+Reason: Payment and attendance/check-in workflows do not exist yet, but the dashboard should show the future analytics shape without inventing fake operational records.
+
+## 2026-06-14: Put agent operations in the event dashboard
+
+Decision: Render agent run buttons, logs, timeline, retry, and approval controls in the event dashboard Agents tab.
+
+Reason: Operators need one command center per event before live streaming and background queues are added.

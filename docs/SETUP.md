@@ -71,6 +71,8 @@ Use the Landing Page and Registration Form tabs to generate public assets. Publi
 /public/events/:orgSlug/:eventSlug/register
 ```
 
+The Analytics tab reads `/events/:eventId/analytics`. The Agents tab can run modular agents, retry failed runs, and approve or reject pending outputs.
+
 To exercise an agent after creating or seeding an event:
 
 ```bash

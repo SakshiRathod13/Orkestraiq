@@ -157,6 +157,8 @@ Response: persisted `AgentRun` with `status`, `approvalStatus`, `input`, and str
 
 Lists agent runs for one event.
 
+Used by the dashboard Agent command center to render logs, timeline, retry controls, and approval status.
+
 ### `GET /agent-runs/:runId`
 
 Returns one agent run and its current status.
@@ -227,6 +229,21 @@ Marks the marketing draft as rejected.
 ### `GET /events/:eventId/attendees`
 
 Returns attendee submissions for the event dashboard.
+
+### `GET /events/:eventId/analytics`
+
+Returns dashboard analytics.
+
+Response includes:
+
+- `metrics.registrations`
+- `metrics.targetParticipants`
+- `metrics.conversionRate`
+- revenue placeholder
+- attendance placeholder
+- registration funnel
+- attendee source breakdown
+- readiness flags
 
 ### `GET /events/public/:orgSlug/:eventSlug`
 

@@ -63,6 +63,8 @@ Milestone 2 provides the first usable event creation workflow:
 - Dynamic JSON registration form renderer
 - Attendee submission storage and dashboard attendee list
 - Approval-required marketing asset drafts
+- Analytics dashboard with computed and placeholder metrics
+- Agent command center with logs, timeline, retry, and approval status
 
 ## Event Brief Fields
 
@@ -154,6 +156,21 @@ Milestone 6 generates drafts only:
 - Certificate template metadata
 
 Drafts require approval and are never sent by the system.
+
+## Analytics and Agent Command Center
+
+Milestone 7 shows:
+
+- Registration funnel
+- Attendee source tracking
+- Registration count
+- Target participant comparison
+- Revenue placeholder
+- Attendance placeholder
+- Agent logs
+- Agent timeline
+- Retry failed agent run
+- Approval status and approval actions
 
 ## Out of Scope for Current Milestone
 

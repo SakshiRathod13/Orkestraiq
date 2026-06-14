@@ -14,6 +14,11 @@ export class SubmitRegistrationDto {
   @MaxLength(40)
   phone?: string;
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(80)
+  source?: string;
+
   @IsObject()
   responses!: Record<string, unknown>;
 }

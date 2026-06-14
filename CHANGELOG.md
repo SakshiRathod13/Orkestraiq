@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 - 2026-06-14
+
+- Added event analytics API and dashboard tab with computed registration metrics.
+- Added registration funnel, attendee source tracking, revenue placeholder, and attendance placeholder.
+- Added agent command center with run buttons, timeline, logs, retry for failed runs, and approval controls.
+- Added attendee source tracking to registration submissions.
+
 ## 0.6.0 - 2026-06-14
 
 - Added approval-required marketing draft generation.

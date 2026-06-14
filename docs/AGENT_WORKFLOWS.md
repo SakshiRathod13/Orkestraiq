@@ -149,3 +149,5 @@ Milestone 4 reserves an Agents tab on the event dashboard. The current tab is a 
 Milestone 5 connects deterministic generated landing page and registration form records to the dashboard. Future agent work should write approved Landing Page Agent and Form Agent outputs into these same models.
 
 Milestone 6 stores Marketing Agent style outputs as approval-required drafts. Future provider-backed marketing agents should write to `MarketingDraft` and leave sending to explicit integration workflows.
+
+Milestone 7 surfaces agent runs in the event dashboard with timeline, logs, retry controls, and approval status. Live streaming remains a future SSE or WebSocket milestone.

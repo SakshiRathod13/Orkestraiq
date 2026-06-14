@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   approveEventBrief,
+  approveAgentRun,
   Attendee,
   EventBrief,
   EventSummary,
@@ -32,14 +33,21 @@ import {
   generateRegistrationForm,
   approveMarketingDraft,
   RegistrationField,
+  retryAgentRun,
+  runAgent,
+  AgentRun,
   rejectMarketingDraft,
+  rejectAgentRun,
   updateEventBrief,
   useEvent,
+  useEventAgentRuns,
+  useEventAnalytics,
   useEventAttendees
 } from "@/lib/api";
 
 const eventTypes = ["WORKSHOP", "WEBINAR", "TRAINING", "BOOTCAMP", "COLLEGE_FEST", "ORIENTATION", "PAID_CLASS", "MEETUP", "OTHER"];
 const tabs = ["Overview", "Plan", "Landing Page", "Registration Form", "Marketing", "Meeting", "Attendees", "Analytics", "Agents", "Settings"] as const;
+const commandCenterAgents = ["COO", "EVENT_PLANNER", "FORM", "LANDING_PAGE", "MARKETING", "DESIGN", "MEETING", "ANALYTICS", "DOCUMENTATION"];
 
 export function EventDashboardPage({ eventId }: { orgId: string; eventId: string }) {
   const event = useEvent(eventId);
@@ -86,8 +94,8 @@ export function EventDashboardPage({ eventId }: { orgId: string; eventId: string
           {activeTab === "Marketing" ? <MarketingTab event={event.data} onRefresh={() => event.refetch()} /> : null}
           {activeTab === "Meeting" ? <PlaceholderTab icon={Video} title="Meeting" body="Meeting provider setup, venue details, and calendar instructions will appear here." /> : null}
           {activeTab === "Attendees" ? <AttendeesTab eventId={eventId} /> : null}
-          {activeTab === "Analytics" ? <PlaceholderTab icon={BarChart3} title="Analytics" body="Registration funnel, revenue, conversion, attendance, and campaign analytics will appear here." /> : null}
-          {activeTab === "Agents" ? <PlaceholderTab icon={Sparkles} title="Agents" body="Agent run activity, approval queues, retry controls, and generated outputs will appear here." /> : null}
+          {activeTab === "Analytics" ? <AnalyticsTab eventId={eventId} /> : null}
+          {activeTab === "Agents" ? <AgentsTab eventId={eventId} /> : null}
           {activeTab === "Settings" ? <PlaceholderTab icon={Settings} title="Settings" body="Event configuration, publishing controls, and ownership settings will appear here." /> : null}
         </>
       ) : null}
@@ -381,6 +389,158 @@ function AttendeesTab({ eventId }: { eventId: string }) {
   );
 }
 
+function AnalyticsTab({ eventId }: { eventId: string }) {
+  const analytics = useEventAnalytics(eventId);
+
+  return (
+    <div className="grid gap-6">
+      {analytics.isLoading ? <div className="h-32 animate-pulse rounded-md bg-muted" /> : null}
+      {analytics.data ? (
+        <>
+          <div className="grid gap-4 md:grid-cols-5">
+            <MetricCard label="Target" value={analytics.data.metrics.targetParticipants || "TBD"} />
+            <MetricCard label="Registrations" value={analytics.data.metrics.registrations} />
+            <MetricCard label="Conversion" value={`${analytics.data.metrics.conversionRate}%`} />
+            <MetricCard label="Revenue" value="Placeholder" />
+            <MetricCard label="Attendance" value="Placeholder" />
+          </div>
+          <Card>
+            <CardHeader><CardTitle>Registration funnel</CardTitle></CardHeader>
+            <CardContent className="grid gap-3">
+              {analytics.data.funnel.map((item) => (
+                <div key={item.stage} className="flex items-center justify-between rounded-md border border-border p-3 text-sm">
+                  <span>{item.stage}</span>
+                  <Badge>{item.placeholder ? "Placeholder" : item.count}</Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader><CardTitle>Attendee source tracking</CardTitle></CardHeader>
+            <CardContent className="grid gap-3">
+              {analytics.data.attendeeSources.length > 0 ? analytics.data.attendeeSources.map((source) => (
+                <div key={source.source} className="flex items-center justify-between rounded-md border border-border p-3 text-sm">
+                  <span>{source.source}</span>
+                  <Badge>{source.count}</Badge>
+                </div>
+              )) : <p className="text-sm text-muted-foreground">No sources yet. Future registrations default to direct.</p>}
+            </CardContent>
+          </Card>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function AgentsTab({ eventId }: { eventId: string }) {
+  const runs = useEventAgentRuns(eventId);
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  async function run(name: string) {
+    setBusyId(name);
+    await runAgent(eventId, name);
+    await runs.refetch();
+    setBusyId(null);
+  }
+
+  async function retry(runId: string) {
+    setBusyId(runId);
+    await retryAgentRun(runId);
+    await runs.refetch();
+    setBusyId(null);
+  }
+
+  async function review(runId: string, action: "approve" | "reject") {
+    setBusyId(runId);
+    if (action === "approve") {
+      await approveAgentRun(runId);
+    } else {
+      await rejectAgentRun(runId);
+    }
+    await runs.refetch();
+    setBusyId(null);
+  }
+
+  return (
+    <div className="grid gap-6">
+      <Card>
+        <CardHeader><CardTitle>Agent command center</CardTitle></CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          {commandCenterAgents.map((name) => (
+            <Button key={name} type="button" onClick={() => run(name)} disabled={busyId === name}>
+              <Sparkles className="h-4 w-4" />
+              {name.replace(/_/g, " ")}
+            </Button>
+          ))}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Agent timeline and logs</CardTitle></CardHeader>
+        <CardContent className="grid gap-4">
+          {runs.isLoading ? <div className="h-24 animate-pulse rounded-md bg-muted" /> : null}
+          {runs.data?.length === 0 ? <p className="text-sm text-muted-foreground">No agent runs yet.</p> : null}
+          {runs.data?.map((runItem) => (
+            <AgentRunCard
+              key={runItem.id}
+              run={runItem}
+              busy={busyId === runItem.id}
+              onRetry={() => retry(runItem.id)}
+              onApprove={() => review(runItem.id, "approve")}
+              onReject={() => review(runItem.id, "reject")}
+            />
+          ))}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function AgentRunCard({
+  run,
+  busy,
+  onRetry,
+  onApprove,
+  onReject
+}: {
+  run: AgentRun;
+  busy: boolean;
+  onRetry: () => void;
+  onApprove: () => void;
+  onReject: () => void;
+}) {
+  return (
+    <div className="grid gap-3 rounded-md border border-border p-4">
+      <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="font-medium">{run.agentName.replace(/_/g, " ")}</p>
+          <p className="text-sm text-muted-foreground">Attempt {run.attempt}</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Badge>{run.status}</Badge>
+          <Badge>{run.approvalStatus}</Badge>
+        </div>
+      </div>
+      <div className="grid gap-2 text-sm text-muted-foreground md:grid-cols-3">
+        <span>Created: {formatDate(run.createdAt)}</span>
+        <span>Started: {formatDate(run.startedAt)}</span>
+        <span>Completed: {formatDate(run.completedAt)}</span>
+      </div>
+      {run.error ? <p className="rounded-md border border-border p-3 text-sm text-red-600">{run.error}</p> : null}
+      {run.output ? <SectionPreview title="Structured output" section={run.output} /> : null}
+      <div className="flex flex-wrap gap-2">
+        {run.status === "FAILED" ? <Button type="button" disabled={busy} onClick={onRetry}>Retry failed run</Button> : null}
+        {run.approvalStatus === "PENDING" ? (
+          <>
+            <Button type="button" disabled={busy} onClick={onApprove}>Approve</Button>
+            <Button type="button" disabled={busy} onClick={onReject}>Reject</Button>
+          </>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function MarketingTab({ event, onRefresh }: { event: EventSummary; onRefresh: () => Promise<unknown> }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isReviewing, setIsReviewing] = useState(false);
@@ -551,4 +711,8 @@ function coerceNumbers(values: Partial<EventBrief>): Record<string, unknown> {
   }
 
   return payload;
+}
+
+function formatDate(value: string | null) {
+  return value ? new Date(value).toLocaleString() : "Not set";
 }

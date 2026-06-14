@@ -25,6 +25,7 @@ export function PublicRegistrationPage({ orgSlug, eventSlug }: { orgSlug: string
       name: values.name,
       email: values.email,
       phone: values.phone,
+      source: values.source || "direct",
       responses: values
     });
     setValues({});

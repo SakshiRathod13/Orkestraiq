@@ -206,6 +206,7 @@ model Attendee {
   name           String
   email          String
   phone          String?
+  source         String   @default("direct")
   responses      Json
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -213,6 +214,7 @@ model Attendee {
 
   @@index([eventId])
   @@index([organizationId])
+  @@index([source])
   @@unique([eventId, email])
 }
 
