@@ -39,6 +39,32 @@ enum EventBriefStatus {
   APPROVED
 }
 
+enum AgentName {
+  COO
+  EVENT_PLANNER
+  FORM
+  LANDING_PAGE
+  MARKETING
+  DESIGN
+  MEETING
+  ANALYTICS
+  DOCUMENTATION
+}
+
+enum AgentRunStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+}
+
+enum AgentApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  NOT_REQUIRED
+}
+
 model User {
   id            String               @id @default(cuid())
   email         String               @unique
@@ -58,6 +84,7 @@ model Organization {
   updatedAt   DateTime             @updatedAt
   members     OrganizationMember[]
   events      Event[]
+  agentRuns   AgentRun[]
 }
 
 model OrganizationMember {
@@ -98,11 +125,45 @@ model Event {
   organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   createdBy      User?         @relation("CreatedEvents", fields: [createdById], references: [id], onDelete: SetNull)
   brief          EventBrief?
+  agentRuns      AgentRun[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
   @@index([status])
   @@index([type])
+}
+
+model AgentRun {
+  id              String              @id @default(cuid())
+  organizationId  String
+  eventId         String?
+  agentName       AgentName
+  status          AgentRunStatus      @default(QUEUED)
+  approvalStatus  AgentApprovalStatus @default(PENDING)
+  input           Json
+  output          Json?
+  error           String?
+  attempt         Int                 @default(1)
+  retryOfId       String?
+  requiresApproval Boolean            @default(true)
+  approvedAt      DateTime?
+  approvedBy      String?
+  rejectedAt      DateTime?
+  rejectedBy      String?
+  createdAt       DateTime            @default(now())
+  startedAt       DateTime?
+  completedAt     DateTime?
+  updatedAt       DateTime            @updatedAt
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  event           Event?              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  retryOf         AgentRun?           @relation("AgentRunRetries", fields: [retryOfId], references: [id], onDelete: SetNull)
+  retries         AgentRun[]          @relation("AgentRunRetries")
+
+  @@index([organizationId])
+  @@index([eventId])
+  @@index([agentName])
+  @@index([status])
+  @@index([approvalStatus])
 }
 
 model EventBrief {

@@ -117,6 +117,66 @@ Approves the event brief and syncs approved fields back to the event.
 - `/agent-runs`
 - `/agent-events/stream`
 
+## Agents
+
+### `GET /agents`
+
+Returns the available modular agent names.
+
+### `POST /events/:eventId/agents/:agentName/run`
+
+Creates and executes an agent run for an event.
+
+Supported `agentName` values:
+
+- `COO`
+- `EVENT_PLANNER`
+- `FORM`
+- `LANDING_PAGE`
+- `MARKETING`
+- `DESIGN`
+- `MEETING`
+- `ANALYTICS`
+- `DOCUMENTATION`
+
+Request:
+
+```json
+{
+  "instructions": "Focus the output on a 2-hour online student workshop."
+}
+```
+
+Response: persisted `AgentRun` with `status`, `approvalStatus`, `input`, and structured `output`.
+
+### `GET /events/:eventId/agent-runs`
+
+Lists agent runs for one event.
+
+### `GET /agent-runs/:runId`
+
+Returns one agent run and its current status.
+
+### `POST /agent-runs/:runId/retry`
+
+Creates a new run from the previous run input and links it through `retryOfId`.
+
+### `POST /agent-runs/:runId/approve`
+
+Marks an agent run as approved by a human.
+
+Request:
+
+```json
+{
+  "reviewer": "program-owner"
+}
+```
+
+### `POST /agent-runs/:runId/reject`
+
+Marks an agent run as rejected by a human.
+
 ## Validation
 
 NestJS validation pipes reject unknown fields and invalid DTOs. Shared Zod contracts live in `packages/shared` for frontend and future agent validation.

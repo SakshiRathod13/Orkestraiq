@@ -86,6 +86,42 @@ Fields include:
 - `missingFields`
 - `missingQuestions`
 
+### AgentRun
+
+Stores one execution of an agent.
+
+Fields include:
+
+- `organizationId`
+- `eventId`
+- `agentName`
+- `status`
+- `approvalStatus`
+- `input`
+- `output`
+- `error`
+- `attempt`
+- `retryOfId`
+- `requiresApproval`
+- `approvedAt`
+- `approvedBy`
+- `rejectedAt`
+- `rejectedBy`
+- `startedAt`
+- `completedAt`
+
+Agent names:
+
+- `COO`
+- `EVENT_PLANNER`
+- `FORM`
+- `LANDING_PAGE`
+- `MARKETING`
+- `DESIGN`
+- `MEETING`
+- `ANALYTICS`
+- `DOCUMENTATION`
+
 ## Planned Models
 
 - `EventPlan`
@@ -126,3 +162,4 @@ Committed migrations:
 
 - `prisma/migrations/20260614130000_init`
 - `prisma/migrations/20260614143000_event_briefs`
+- `prisma/migrations/20260614160000_agent_runs`

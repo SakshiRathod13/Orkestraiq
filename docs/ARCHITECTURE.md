@@ -14,6 +14,8 @@ The foundation includes:
 
 Milestone 2 adds prompt-driven event creation. The API stores the original prompt in `EventBrief`, extracts a structured brief, asks missing questions through the web wizard, and persists the approved brief back onto the event.
 
+Milestone 3 adds modular agent services and `AgentRun` persistence. Each agent accepts typed context, returns structured JSON, stores run status/output, supports retry, and requires human approval before downstream use.
+
 ## System Boundaries
 
 The frontend never talks directly to the database. It calls the NestJS API using typed contracts. The API owns validation, tenancy checks, persistence, and later background workflow dispatch.
@@ -38,14 +40,19 @@ Future authenticated routes should derive accessible organizations from `Organiz
 Agents will run as modular workflows:
 
 1. Intake parser
-2. Event planner
-3. Registration form generator
-4. Landing page generator
-5. Marketing campaign generator
-6. Launch readiness checker
-7. Analytics summarizer
+2. COO agent
+3. Event planner
+4. Registration form generator
+5. Landing page generator
+6. Marketing campaign generator
+7. Design agent
+8. Meeting agent placeholder
+9. Analytics agent placeholder
+10. Documentation agent placeholder
 
 Each workflow should persist prompt version, structured output, status, timing, and logs.
+
+Current agent execution is synchronous and deterministic. The service boundary is intentionally compatible with future queue-backed and AI-provider-backed execution.
 
 ## Data Flow
 
@@ -66,6 +73,17 @@ User prompt
 - `/organizations/:orgId/events`: organization event list.
 - `/organizations/:orgId/events/new`: natural-language event prompt.
 - `/organizations/:orgId/events/:eventId`: structured brief review and approval wizard.
+
+## Agent Run Lifecycle
+
+```text
+POST run endpoint
+  -> create AgentRun as QUEUED
+  -> execute agent as RUNNING
+  -> persist SUCCEEDED or FAILED output
+  -> wait for human APPROVED or REJECTED state
+  -> optional retry creates a new AgentRun linked to retryOfId
+```
 
 ## Current Constraints
 

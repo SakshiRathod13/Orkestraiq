@@ -20,6 +20,7 @@ This repository is initialized as a documentation-first TypeScript monorepo with
 - Organization event list routes
 - Natural-language prompt intake for event creation
 - Structured event brief extraction and approval workflow
+- Modular planning agents with persisted runs, retry, status, and human approval
 
 ## Requirements
 
@@ -51,6 +52,16 @@ Primary app routes:
 - `/organizations/:orgId/events`
 - `/organizations/:orgId/events/new`
 - `/organizations/:orgId/events/:eventId`
+
+Primary agent endpoints:
+
+- `GET /agents`
+- `POST /events/:eventId/agents/:agentName/run`
+- `GET /events/:eventId/agent-runs`
+- `GET /agent-runs/:runId`
+- `POST /agent-runs/:runId/retry`
+- `POST /agent-runs/:runId/approve`
+- `POST /agent-runs/:runId/reject`
 
 ## Useful Scripts
 

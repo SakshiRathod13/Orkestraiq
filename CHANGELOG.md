@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-06-14
+
+- Added modular agent services for COO, planning, form, landing page, marketing, design, meeting, analytics, and documentation workflows.
+- Added `AgentRun` persistence with status, output, retry lineage, and human approval metadata.
+- Added API endpoints to run agents, inspect status, retry runs, and approve or reject outputs.
+- Expanded typed agent input and output contracts in `packages/ai`.
+
 ## 0.2.0 - 2026-06-14
 
 - Added organization event list routes.

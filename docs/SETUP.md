@@ -62,6 +62,14 @@ http://localhost:4000/health
 
 After seeding, open `/dashboard`, then use the organization event count or create button to reach the event list and prompt intake flow.
 
+To exercise an agent after creating or seeding an event:
+
+```bash
+curl -X POST http://localhost:4000/events/<eventId>/agents/COO/run \
+  -H "Content-Type: application/json" \
+  -d "{\"instructions\":\"Create the operating plan.\"}"
+```
+
 ## Verification
 
 ```bash

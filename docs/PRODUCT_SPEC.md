@@ -53,6 +53,8 @@ Milestone 2 provides the first usable event creation workflow:
 - Extracted field review
 - Missing question wizard
 - Approved brief persistence
+- Modular AI planning agents
+- Agent status, retry, and human approval controls
 
 ## Event Brief Fields
 
@@ -70,6 +72,22 @@ The event brief captures:
 - Language
 - Tone
 - Goal
+
+## Planning Agents
+
+Milestone 3 agents:
+
+- COO Agent
+- Event Planner Agent
+- Form Agent
+- Landing Page Agent
+- Marketing Agent
+- Design Agent
+- Meeting Agent placeholder
+- Analytics Agent placeholder
+- Documentation Agent placeholder
+
+Each agent accepts typed event context, returns structured JSON, stores an `AgentRun`, exposes status, supports retry, and requires human approval by default.
 
 ## Out of Scope for Current Milestone
 

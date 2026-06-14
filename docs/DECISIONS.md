@@ -41,3 +41,15 @@ Reason: The event creation product flow needs to be demoable before provider cre
 Decision: Store the original prompt and extracted fields in `EventBrief`, linked one-to-one with `Event`.
 
 Reason: The raw prompt should remain auditable, while approved fields can be synced to event columns used by dashboard and list views.
+
+## 2026-06-14: Persist agent outputs in AgentRun
+
+Decision: Store each modular agent execution in `AgentRun` with status, input, output, retry lineage, and human approval metadata.
+
+Reason: Agent outputs must be inspectable, retryable, and gated before they affect public event assets or attendee workflows.
+
+## 2026-06-14: Use synchronous deterministic agents first
+
+Decision: Implement each requested agent as a modular Nest service returning schema-validated JSON.
+
+Reason: This gives the product a working agent contract and persistence layer before adding BullMQ, streaming updates, provider credentials, and prompt-version execution.
