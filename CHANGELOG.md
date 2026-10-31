@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Added local email/password authentication with signed HTTP-only sessions and enforced organization/event membership checks.
+- Added OpenAI-compatible provider execution for agents when configured; deterministic execution remains the local default.
+- Replaced sidebar dead links with routed workspace surfaces and clarified local setup requirements.
+
 ## 0.8.0 - 2026-06-14
 
 - Added integration provider interfaces for Gmail, Google Calendar, Google Meet, Zoom, Razorpay, Stripe, and WhatsApp Business API.

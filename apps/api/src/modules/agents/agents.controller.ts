@@ -2,10 +2,13 @@ import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { AgentsService } from "./agents.service.js";
 import { RunAgentDto } from "./dto/run-agent.dto.js";
 import { HumanReviewDto } from "./dto/human-review.dto.js";
+import { AuthService } from "../auth/auth.service.js";
+import { CurrentUser } from "../auth/current-user.decorator.js";
+import type { AuthenticatedUser } from "../auth/auth.types.js";
 
 @Controller()
 export class AgentsController {
-  constructor(private readonly agentsService: AgentsService) {}
+  constructor(private readonly agentsService: AgentsService, private readonly authService: AuthService) {}
 
   @Get("agents")
   listAgents() {
@@ -13,36 +16,47 @@ export class AgentsController {
   }
 
   @Get("events/:eventId/agent-runs")
-  listRuns(@Param("eventId") eventId: string) {
+  async listRuns(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.agentsService.listRuns(eventId);
   }
 
   @Post("events/:eventId/agents/:agentName/run")
-  runAgent(
+  async runAgent(
     @Param("eventId") eventId: string,
     @Param("agentName") agentName: string,
-    @Body() dto: RunAgentDto
+    @Body() dto: RunAgentDto,
+    @CurrentUser() user: AuthenticatedUser
   ) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.agentsService.runForEvent(eventId, agentName, dto);
   }
 
   @Get("agent-runs/:runId")
-  getRun(@Param("runId") runId: string) {
-    return this.agentsService.getRun(runId);
+  async getRun(@Param("runId") runId: string, @CurrentUser() user: AuthenticatedUser) {
+    const run = await this.agentsService.getRun(runId);
+    if (run.eventId) await this.authService.assertEventAccess(user.id, run.eventId);
+    return run;
   }
 
   @Post("agent-runs/:runId/retry")
-  retry(@Param("runId") runId: string) {
+  async retry(@Param("runId") runId: string, @CurrentUser() user: AuthenticatedUser) {
+    const run = await this.agentsService.getRun(runId);
+    if (run.eventId) await this.authService.assertEventAccess(user.id, run.eventId);
     return this.agentsService.retry(runId);
   }
 
   @Post("agent-runs/:runId/approve")
-  approve(@Param("runId") runId: string, @Body() dto: HumanReviewDto) {
+  async approve(@Param("runId") runId: string, @Body() dto: HumanReviewDto, @CurrentUser() user: AuthenticatedUser) {
+    const run = await this.agentsService.getRun(runId);
+    if (run.eventId) await this.authService.assertEventAccess(user.id, run.eventId);
     return this.agentsService.approve(runId, dto);
   }
 
   @Post("agent-runs/:runId/reject")
-  reject(@Param("runId") runId: string, @Body() dto: HumanReviewDto) {
+  async reject(@Param("runId") runId: string, @Body() dto: HumanReviewDto, @CurrentUser() user: AuthenticatedUser) {
+    const run = await this.agentsService.getRun(runId);
+    if (run.eventId) await this.authService.assertEventAccess(user.id, run.eventId);
     return this.agentsService.reject(runId, dto);
   }
 }

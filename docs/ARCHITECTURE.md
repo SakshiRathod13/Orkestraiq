@@ -43,7 +43,7 @@ The AI layer is isolated behind provider interfaces so OpenAI-compatible provide
 
 `Organization` is the tenant root. `Event` records must always be scoped to an organization. API routes that create or list organization-owned data include `orgId` in the route.
 
-Future authenticated routes should derive accessible organizations from `OrganizationMember` instead of trusting client-supplied IDs alone.
+Authenticated routes derive accessible organizations from `OrganizationMember`; clients cannot use an organization or event ID they do not belong to. The API issues signed, HTTP-only session cookies from the local credentials flow. Public landing pages and public registration remain deliberately unauthenticated.
 
 ## Agent Architecture
 
@@ -62,7 +62,7 @@ Agents will run as modular workflows:
 
 Each workflow should persist prompt version, structured output, status, timing, and logs.
 
-Current agent execution is synchronous and deterministic. The service boundary is intentionally compatible with future queue-backed and AI-provider-backed execution.
+Agent execution is synchronous. With `AI_EXECUTION_MODE=deterministic`, it uses local structured fallback outputs so development needs no model credentials. With `AI_EXECUTION_MODE=provider`, it calls an OpenAI-compatible Chat Completions endpoint and validates the returned JSON with the agent's Zod schema before persistence.
 
 ## Data Flow
 

@@ -18,6 +18,24 @@ Response:
 }
 ```
 
+## Authentication
+
+### `POST /auth/register`
+
+Creates a user, an owner membership, and an initial organization. Sets a signed HTTP-only session cookie.
+
+### `POST /auth/login`
+
+Authenticates an existing email/password account and sets a signed HTTP-only session cookie.
+
+### `POST /auth/logout`
+
+Clears the current session.
+
+### `GET /auth/me`
+
+Returns the signed-in user. All non-public organization, event, and agent routes require this session and verify organization membership.
+
 ## Organizations
 
 ### `GET /organizations`
@@ -110,8 +128,6 @@ Request fields:
 Approves the event brief and syncs approved fields back to the event.
 
 ## Planned API Groups
-
-- `/auth`
 - `/events/:id/plan`
 - `/events/:id/landing-page`
 - `/events/:id/registration-form`

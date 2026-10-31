@@ -3,17 +3,23 @@ import { ReviewMarketingDraftDto } from "./dto/review-marketing-draft.dto.js";
 import { SubmitRegistrationDto } from "./dto/submit-registration.dto.js";
 import { UpdateEventBriefDto } from "./dto/update-event-brief.dto.js";
 import { EventsService } from "./events.service.js";
+import { AuthService } from "../auth/auth.service.js";
+import { CurrentUser } from "../auth/current-user.decorator.js";
+import { Public } from "../auth/public.decorator.js";
+import type { AuthenticatedUser } from "../auth/auth.types.js";
 
 @Controller("events")
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(private readonly eventsService: EventsService, private readonly authService: AuthService) {}
 
   @Get("public/:orgSlug/:eventSlug")
+  @Public()
   findPublicEvent(@Param("orgSlug") orgSlug: string, @Param("eventSlug") eventSlug: string) {
     return this.eventsService.findPublicEvent(orgSlug, eventSlug);
   }
 
   @Post("public/:orgSlug/:eventSlug/register")
+  @Public()
   submitRegistration(
     @Param("orgSlug") orgSlug: string,
     @Param("eventSlug") eventSlug: string,
@@ -23,57 +29,68 @@ export class EventsController {
   }
 
   @Get(":eventId")
-  findOne(@Param("eventId") eventId: string) {
+  async findOne(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.findOne(eventId);
   }
 
   @Get(":eventId/brief")
-  findBrief(@Param("eventId") eventId: string) {
+  async findBrief(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.findBrief(eventId);
   }
 
   @Patch(":eventId/brief")
-  updateBrief(@Param("eventId") eventId: string, @Body() dto: UpdateEventBriefDto) {
+  async updateBrief(@Param("eventId") eventId: string, @Body() dto: UpdateEventBriefDto, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.updateBrief(eventId, dto);
   }
 
   @Post(":eventId/brief/approve")
-  approveBrief(@Param("eventId") eventId: string, @Body() dto: UpdateEventBriefDto) {
+  async approveBrief(@Param("eventId") eventId: string, @Body() dto: UpdateEventBriefDto, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.approveBrief(eventId, dto);
   }
 
   @Get(":eventId/attendees")
-  findAttendees(@Param("eventId") eventId: string) {
+  async findAttendees(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.findAttendees(eventId);
   }
 
   @Get(":eventId/analytics")
-  getAnalytics(@Param("eventId") eventId: string) {
+  async getAnalytics(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.getAnalytics(eventId);
   }
 
   @Post(":eventId/landing-page/generate")
-  generateLandingPage(@Param("eventId") eventId: string) {
+  async generateLandingPage(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.generateLandingPage(eventId);
   }
 
   @Post(":eventId/registration-form/generate")
-  generateRegistrationForm(@Param("eventId") eventId: string) {
+  async generateRegistrationForm(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.generateRegistrationForm(eventId);
   }
 
   @Post(":eventId/marketing/generate")
-  generateMarketingDraft(@Param("eventId") eventId: string) {
+  async generateMarketingDraft(@Param("eventId") eventId: string, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.generateMarketingDraft(eventId);
   }
 
   @Post(":eventId/marketing/approve")
-  approveMarketingDraft(@Param("eventId") eventId: string, @Body() dto: ReviewMarketingDraftDto) {
+  async approveMarketingDraft(@Param("eventId") eventId: string, @Body() dto: ReviewMarketingDraftDto, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.approveMarketingDraft(eventId, dto);
   }
 
   @Post(":eventId/marketing/reject")
-  rejectMarketingDraft(@Param("eventId") eventId: string, @Body() dto: ReviewMarketingDraftDto) {
+  async rejectMarketingDraft(@Param("eventId") eventId: string, @Body() dto: ReviewMarketingDraftDto, @CurrentUser() user: AuthenticatedUser) {
+    await this.authService.assertEventAccess(user.id, eventId);
     return this.eventsService.rejectMarketingDraft(eventId, dto);
   }
 }

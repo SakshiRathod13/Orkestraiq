@@ -5,12 +5,14 @@ import { PrismaService } from "../prisma/prisma.service.js";
 import { RunAgentDto } from "./dto/run-agent.dto.js";
 import { HumanReviewDto } from "./dto/human-review.dto.js";
 import { AgentsRegistry } from "./agents.registry.js";
+import { AiExecutionService } from "./ai-execution.service.js";
 
 @Injectable()
 export class AgentsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly registry: AgentsRegistry
+    private readonly registry: AgentsRegistry,
+    private readonly aiExecution: AiExecutionService
   ) {}
 
   listAgents() {
@@ -129,7 +131,7 @@ export class AgentsService {
 
     try {
       const input = agentRunInputSchema.parse(run.input);
-      const output = await agent.run(input);
+      const output = await this.aiExecution.execute(run.agentName, input, () => agent.run(input));
 
       return this.prisma.agentRun.update({
         where: { id: runId },

@@ -50,7 +50,7 @@ export class EventsService {
     return event;
   }
 
-  async create(organizationId: string, dto: CreateEventDto) {
+  async create(organizationId: string, dto: CreateEventDto, createdById?: string) {
     const organization = await this.prisma.organization.findUnique({
       where: { id: organizationId }
     });
@@ -62,6 +62,7 @@ export class EventsService {
     const slug = await this.createUniqueSlug(organizationId, dto.title);
     const data = {
       organizationId,
+      createdById: createdById ?? null,
       title: dto.title,
       slug,
       description: dto.description ?? null,
@@ -84,7 +85,7 @@ export class EventsService {
     });
   }
 
-  async createFromPrompt(organizationId: string, dto: CreateEventFromPromptDto) {
+  async createFromPrompt(organizationId: string, dto: CreateEventFromPromptDto, createdById?: string) {
     const organization = await this.prisma.organization.findUnique({
       where: { id: organizationId }
     });
@@ -100,6 +101,7 @@ export class EventsService {
     return this.prisma.event.create({
       data: {
         organizationId,
+        createdById: createdById ?? null,
         title,
         slug,
         description: dto.prompt,

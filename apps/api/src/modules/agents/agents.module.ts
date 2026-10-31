@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { AgentsController } from "./agents.controller.js";
 import { AgentsRegistry } from "./agents.registry.js";
 import { AgentsService } from "./agents.service.js";
+import { AiExecutionService } from "./ai-execution.service.js";
 import { AnalyticsAgentService } from "./services/analytics-agent.service.js";
 import { CooAgentService } from "./services/coo-agent.service.js";
 import { DesignAgentService } from "./services/design-agent.service.js";
@@ -17,6 +18,7 @@ import { MeetingAgentService } from "./services/meeting-agent.service.js";
   providers: [
     AgentsService,
     AgentsRegistry,
+    AiExecutionService,
     CooAgentService,
     EventPlannerAgentService,
     FormAgentService,

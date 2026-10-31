@@ -4,13 +4,14 @@
 
 ### User
 
-Placeholder identity model for Milestone 1. It supports organization memberships and event ownership.
+Credential-backed identity model. It supports organization memberships and event ownership; passwords are stored only as salted `passwordHash` values.
 
 Fields:
 
 - `id`
 - `email`
 - `name`
+- `passwordHash`
 - `createdAt`
 - `updatedAt`
 

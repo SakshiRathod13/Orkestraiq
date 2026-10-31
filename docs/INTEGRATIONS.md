@@ -23,7 +23,7 @@ Rules:
 - Validate structured JSON outputs with Zod.
 - Persist prompt versions before production agent execution.
 
-Milestone 2 does not call an AI provider. `PromptBriefExtractorService` is a local deterministic extractor used to exercise the same product boundary without requiring credentials.
+`PromptBriefExtractorService` remains a local deterministic intake extractor. Agent execution supports `AI_EXECUTION_MODE=provider` with `OPENAI_API_KEY`, `OPENAI_MODEL`, and optionally `OPENAI_BASE_URL`; the response is parsed as JSON and validated against the relevant Zod output schema. Leave `AI_EXECUTION_MODE=deterministic` for local development without provider credentials.
 
 Milestone 3 agent services also run deterministically. The `AgentRun` table is the integration boundary for future OpenAI-compatible provider execution, retries, approval gates, and live activity streams.
 
@@ -106,6 +106,8 @@ Environment placeholders:
 ## Integration Records
 
 `Integration` stores organization-level provider status, non-secret config, and a credential reference. Secret values must live in an external secret store or environment-managed runtime, not in database config JSON.
+
+No live Gmail, WhatsApp, Calendar, Zoom, Stripe, or Razorpay calls are enabled yet. Those services require OAuth/application credentials, webhook URLs, secure credential storage, and explicit send/charge controls. The app stores approval-required drafts and provider interfaces without contacting third parties.
 
 ## Redis and Queues
 

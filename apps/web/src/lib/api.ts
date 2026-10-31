@@ -174,6 +174,7 @@ const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBaseUrl}${path}`, {
     ...init,
+    credentials: "include",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -222,6 +223,18 @@ export function useEvent(eventId: string) {
 export function apiGet<T>(path: string): Promise<T> {
   return apiRequest<T>(path);
 }
+
+export interface CurrentUser { id: string; email: string; name: string; }
+export function useCurrentUser() {
+  return useQuery({ queryKey: ["current-user"], queryFn: () => apiGet<{ user: CurrentUser }>("/auth/me"), retry: false });
+}
+export function login(payload: { email: string; password: string }) {
+  return apiRequest<{ user: CurrentUser }>("/auth/login", { method: "POST", body: JSON.stringify(payload) });
+}
+export function register(payload: { name: string; email: string; password: string; organizationName?: string }) {
+  return apiRequest<{ user: CurrentUser }>("/auth/register", { method: "POST", body: JSON.stringify(payload) });
+}
+export function logout() { return apiRequest<{ ok: boolean }>("/auth/logout", { method: "POST" }); }
 
 export function createEventFromPrompt(orgId: string, prompt: string) {
   return apiRequest<EventSummary>(`/organizations/${orgId}/events/from-prompt`, {

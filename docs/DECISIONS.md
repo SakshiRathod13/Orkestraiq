@@ -24,6 +24,18 @@ Decision: Add `User` and `OrganizationMember`, but no login flow yet.
 
 Reason: The data model needs to support real auth later without slowing the foundation milestone.
 
+## 2026-10-31: Use local signed sessions for the first real authentication flow
+
+Decision: Use email/password credentials with Node `scrypt`, signed HTTP-only cookies, and database-backed organization membership checks.
+
+Reason: This makes the product locally runnable and tenant-safe without requiring a third-party identity provider. A future hosted deployment can replace the session issuer while retaining the membership authorization boundary.
+
+## 2026-10-31: Keep external delivery integrations disconnected by default
+
+Decision: Implement real OpenAI-compatible agent execution behind configuration, but do not activate Gmail, WhatsApp, calendar, meeting, or payment providers by default.
+
+Reason: Those services require organization-owned credentials, production callback URLs, webhook verification, and explicit delivery or charge controls. Draft and approval workflows remain usable without external side effects.
+
 ## 2026-06-14: Track residual Next audit advisory
 
 Decision: Do not run `npm audit fix --force` for the remaining Next/PostCSS advisory.

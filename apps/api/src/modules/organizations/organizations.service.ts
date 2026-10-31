@@ -5,8 +5,9 @@ import { PrismaService } from "../prisma/prisma.service.js";
 export class OrganizationsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
+  findAll(userId: string) {
     return this.prisma.organization.findMany({
+      where: { members: { some: { userId } } },
       orderBy: { createdAt: "asc" },
       include: {
         _count: {

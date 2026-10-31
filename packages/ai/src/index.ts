@@ -1,4 +1,5 @@
 import { z } from "zod";
+export { OpenAiCompatibleProvider } from "./openai-compatible-provider.js";
 
 export const agentNames = [
   "COO",

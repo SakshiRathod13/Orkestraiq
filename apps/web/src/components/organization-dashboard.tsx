@@ -43,8 +43,7 @@ export function OrganizationDashboard() {
               <CardTitle>API connection needed</CardTitle>
             </CardHeader>
             <CardContent>
-              Start the API with <code>npm run dev -w @orchestraiq/api</code> and seed the database
-              to load organization data.
+              <Link href="/login" className="font-medium text-primary underline">Sign in or create an account</Link> after starting the API and database.
             </CardContent>
           </Card>
         ) : null}

@@ -3,14 +3,14 @@ import { ReactNode } from "react";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard" },
-  { label: "Events", href: "/dashboard" },
-  { label: "Campaigns", href: "/dashboard" },
-  { label: "Attendees", href: "/dashboard" },
-  { label: "Payments", href: "/dashboard" },
-  { label: "Agent Runs", href: "/dashboard" },
-  { label: "Templates", href: "/dashboard" },
-  { label: "Integrations", href: "/dashboard" },
-  { label: "Organization Settings", href: "/dashboard" }
+  { label: "Events", href: "/workspace/events" },
+  { label: "Campaigns", href: "/workspace/campaigns" },
+  { label: "Attendees", href: "/workspace/attendees" },
+  { label: "Payments", href: "/workspace/payments" },
+  { label: "Agent Runs", href: "/workspace/agent-runs" },
+  { label: "Templates", href: "/workspace/templates" },
+  { label: "Integrations", href: "/workspace/integrations" },
+  { label: "Organization Settings", href: "/workspace/settings" }
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -22,6 +22,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             Orchestraiq
           </Link>
           <p className="hidden text-sm text-muted-foreground lg:mt-1 lg:block">OpsPilot command center</p>
+          <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground lg:mt-4 lg:inline-block">Account</Link>
         </div>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:grid lg:overflow-visible lg:px-3 lg:py-2">
           {navItems.map((item) => (

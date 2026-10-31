@@ -6,7 +6,7 @@ Product vision:
 
 > Describe the event once. OpsPilot plans, creates, launches, promotes, manages, analyzes, and documents it.
 
-## Milestone 2 Status
+## Current Status
 
 This repository is initialized as a documentation-first TypeScript monorepo with:
 
@@ -28,6 +28,8 @@ This repository is initialized as a documentation-first TypeScript monorepo with
 - Agent command center with timeline, logs, retry, and approval controls
 - Integration interfaces and operation tables for email, calendar, meetings, payments, WhatsApp, audits, tasks, and analytics snapshots
 - Left-sidebar command-center navigation
+- Email/password login with signed HTTP-only sessions and organization access control
+- OpenAI-compatible agent execution when provider credentials are configured
 
 ## Requirements
 
@@ -47,6 +49,8 @@ npm run db:seed
 npm run dev
 ```
 
+Set `AUTH_SECRET` in `.env` to a long random value before starting the API. Leave `AI_EXECUTION_MODE=deterministic` for no-cost local agent drafts, or set it to `provider` together with `OPENAI_API_KEY` and `OPENAI_MODEL` for provider-backed execution.
+
 Frontend: `http://localhost:3000`
 
 Backend: `http://localhost:4000`
@@ -61,6 +65,7 @@ Primary app routes:
 - `/organizations/:orgId/events/:eventId`
 - `/public/events/:orgSlug/:eventSlug`
 - `/public/events/:orgSlug/:eventSlug/register`
+- `/login`
 
 Event dashboard tabs:
 
