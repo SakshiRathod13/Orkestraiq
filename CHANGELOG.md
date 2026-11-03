@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fixed the authentication guard so public health and sign-up routes bypass session validation correctly.
 - Added local email/password authentication with signed HTTP-only sessions and enforced organization/event membership checks.
 - Added OpenAI-compatible provider execution for agents when configured; deterministic execution remains the local default.
 - Replaced sidebar dead links with routed workspace surfaces and clarified local setup requirements.
