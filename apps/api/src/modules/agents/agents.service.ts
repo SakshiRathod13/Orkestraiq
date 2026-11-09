@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { agentNameSchema, agentRunInputSchema, type AgentName } from "@orchestraiq/ai";
 import { AgentApprovalStatus, AgentRunStatus, Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service.js";
@@ -10,9 +10,9 @@ import { AiExecutionService } from "./ai-execution.service.js";
 @Injectable()
 export class AgentsService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly registry: AgentsRegistry,
-    private readonly aiExecution: AiExecutionService
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(AgentsRegistry) private readonly registry: AgentsRegistry,
+    @Inject(AiExecutionService) private readonly aiExecution: AiExecutionService
   ) {}
 
   listAgents() {

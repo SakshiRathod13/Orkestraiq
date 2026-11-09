@@ -36,6 +36,12 @@ Decision: Implement real OpenAI-compatible agent execution behind configuration,
 
 Reason: Those services require organization-owned credentials, production callback URLs, webhook verification, and explicit delivery or charge controls. Draft and approval workflows remain usable without external side effects.
 
+## 2026-11-09: Use explicit NestJS injection tokens in the development runtime
+
+Decision: Decorate API constructor dependencies with `@Inject(Service)` tokens.
+
+Reason: The local `tsx` watcher does not consistently emit the constructor metadata NestJS needs for implicit dependency injection. Explicit tokens make the development server and compiled runtime behave consistently.
+
 ## 2026-06-14: Track residual Next audit advisory
 
 Decision: Do not run `npm audit fix --force` for the remaining Next/PostCSS advisory.

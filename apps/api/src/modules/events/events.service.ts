@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { AgentApprovalStatus, EventBriefStatus, EventStatus, Prisma } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { CreateEventDto } from "./dto/create-event.dto.js";
@@ -11,8 +11,8 @@ import { PromptBriefExtractorService } from "./prompt-brief-extractor.service.js
 @Injectable()
 export class EventsService {
   constructor(
-    private readonly prisma: PrismaService,
-    private readonly extractor: PromptBriefExtractorService
+    @Inject(PrismaService) private readonly prisma: PrismaService,
+    @Inject(PromptBriefExtractorService) private readonly extractor: PromptBriefExtractorService
   ) {}
 
   findByOrganization(organizationId: string) {

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import type { AgentName } from "@orchestraiq/ai";
 import { StructuredAgentService } from "./agent-service.interface.js";
 import { AnalyticsAgentService } from "./services/analytics-agent.service.js";
@@ -16,15 +16,15 @@ export class AgentsRegistry {
   private readonly services: Record<AgentName, StructuredAgentService>;
 
   constructor(
-    coo: CooAgentService,
-    eventPlanner: EventPlannerAgentService,
-    form: FormAgentService,
-    landingPage: LandingPageAgentService,
-    marketing: MarketingAgentService,
-    design: DesignAgentService,
-    meeting: MeetingAgentService,
-    analytics: AnalyticsAgentService,
-    documentation: DocumentationAgentService
+    @Inject(CooAgentService) coo: CooAgentService,
+    @Inject(EventPlannerAgentService) eventPlanner: EventPlannerAgentService,
+    @Inject(FormAgentService) form: FormAgentService,
+    @Inject(LandingPageAgentService) landingPage: LandingPageAgentService,
+    @Inject(MarketingAgentService) marketing: MarketingAgentService,
+    @Inject(DesignAgentService) design: DesignAgentService,
+    @Inject(MeetingAgentService) meeting: MeetingAgentService,
+    @Inject(AnalyticsAgentService) analytics: AnalyticsAgentService,
+    @Inject(DocumentationAgentService) documentation: DocumentationAgentService
   ) {
     this.services = {
       COO: coo,

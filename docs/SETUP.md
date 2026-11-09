@@ -44,6 +44,8 @@ npm run db:seed
 npm run dev
 ```
 
+Run this command once. It starts the web and API development processes together; starting multiple API watchers separately causes port `4000` conflicts.
+
 Frontend:
 
 ```text

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Param, Patch, Post } from "@nestjs/common";
 import { ReviewMarketingDraftDto } from "./dto/review-marketing-draft.dto.js";
 import { SubmitRegistrationDto } from "./dto/submit-registration.dto.js";
 import { UpdateEventBriefDto } from "./dto/update-event-brief.dto.js";
@@ -10,7 +10,10 @@ import type { AuthenticatedUser } from "../auth/auth.types.js";
 
 @Controller("events")
 export class EventsController {
-  constructor(private readonly eventsService: EventsService, private readonly authService: AuthService) {}
+  constructor(
+    @Inject(EventsService) private readonly eventsService: EventsService,
+    @Inject(AuthService) private readonly authService: AuthService
+  ) {}
 
   @Get("public/:orgSlug/:eventSlug")
   @Public()

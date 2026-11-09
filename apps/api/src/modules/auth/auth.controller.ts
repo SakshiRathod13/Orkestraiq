@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Post, Res } from "@nestjs/common";
 import { CurrentUser } from "./current-user.decorator.js";
 import { Public } from "./public.decorator.js";
 import { AuthService } from "./auth.service.js";
@@ -13,7 +13,7 @@ type CookieResponse = {
 
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   @Public()
   @Post("register")

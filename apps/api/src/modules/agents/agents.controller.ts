@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Param, Post } from "@nestjs/common";
 import { AgentsService } from "./agents.service.js";
 import { RunAgentDto } from "./dto/run-agent.dto.js";
 import { HumanReviewDto } from "./dto/human-review.dto.js";
@@ -8,7 +8,10 @@ import type { AuthenticatedUser } from "../auth/auth.types.js";
 
 @Controller()
 export class AgentsController {
-  constructor(private readonly agentsService: AgentsService, private readonly authService: AuthService) {}
+  constructor(
+    @Inject(AgentsService) private readonly agentsService: AgentsService,
+    @Inject(AuthService) private readonly authService: AuthService
+  ) {}
 
   @Get("agents")
   listAgents() {

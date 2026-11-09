@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Inject, Param, Post } from "@nestjs/common";
 import { CreateEventDto } from "../events/dto/create-event.dto.js";
 import { CreateEventFromPromptDto } from "../events/dto/create-event-from-prompt.dto.js";
 import { EventsService } from "../events/events.service.js";
@@ -10,9 +10,9 @@ import { OrganizationsService } from "./organizations.service.js";
 @Controller("organizations")
 export class OrganizationsController {
   constructor(
-    private readonly organizationsService: OrganizationsService,
-    private readonly eventsService: EventsService,
-    private readonly authService: AuthService
+    @Inject(OrganizationsService) private readonly organizationsService: OrganizationsService,
+    @Inject(EventsService) private readonly eventsService: EventsService,
+    @Inject(AuthService) private readonly authService: AuthService
   ) {}
 
   @Get()
