@@ -284,13 +284,21 @@ function PlanTab({ eventId, event }: { eventId: string; event: ReturnType<typeof
 
 function LandingPageTab({ event, onRefresh }: { event: EventSummary; onRefresh: () => Promise<unknown> }) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   const publicPath = event.organization ? `/public/events/${event.organization.slug}/${event.slug}` : null;
 
   async function generate() {
     setIsGenerating(true);
-    await generateLandingPage(event.id);
-    await onRefresh();
-    setIsGenerating(false);
+    setMessage(null);
+    try {
+      await generateLandingPage(event.id);
+      await onRefresh();
+      setMessage("Landing page generated.");
+    } catch (error) {
+      setMessage(errorMessage(error));
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   return (
@@ -308,6 +316,7 @@ function LandingPageTab({ event, onRefresh }: { event: EventSummary; onRefresh: 
         </div>
       </CardHeader>
       <CardContent className="grid gap-4">
+        {message ? <ActionMessage message={message} /> : null}
         {event.landingPage ? (
           <>
             <SectionPreview title="Hero" section={event.landingPage.hero} />
@@ -331,13 +340,21 @@ function LandingPageTab({ event, onRefresh }: { event: EventSummary; onRefresh: 
 
 function RegistrationFormTab({ event, onRefresh }: { event: EventSummary; onRefresh: () => Promise<unknown> }) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   const publicPath = event.organization ? `/public/events/${event.organization.slug}/${event.slug}/register` : null;
 
   async function generate() {
     setIsGenerating(true);
-    await generateRegistrationForm(event.id);
-    await onRefresh();
-    setIsGenerating(false);
+    setMessage(null);
+    try {
+      await generateRegistrationForm(event.id);
+      await onRefresh();
+      setMessage("Registration form generated.");
+    } catch (error) {
+      setMessage(errorMessage(error));
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   return (
@@ -355,6 +372,7 @@ function RegistrationFormTab({ event, onRefresh }: { event: EventSummary; onRefr
         </div>
       </CardHeader>
       <CardContent className="grid gap-3">
+        {message ? <ActionMessage message={message} /> : null}
         {event.registrationForm ? (
           <>
             <p className="text-sm text-muted-foreground">{event.registrationForm.description}</p>
@@ -544,23 +562,38 @@ function AgentRunCard({
 function MarketingTab({ event, onRefresh }: { event: EventSummary; onRefresh: () => Promise<unknown> }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isReviewing, setIsReviewing] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   async function generate() {
     setIsGenerating(true);
-    await generateMarketingDraft(event.id);
-    await onRefresh();
-    setIsGenerating(false);
+    setMessage(null);
+    try {
+      await generateMarketingDraft(event.id);
+      await onRefresh();
+      setMessage("Marketing drafts generated. Review them before any future send action.");
+    } catch (error) {
+      setMessage(errorMessage(error));
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   async function review(action: "approve" | "reject") {
     setIsReviewing(true);
-    if (action === "approve") {
-      await approveMarketingDraft(event.id);
-    } else {
-      await rejectMarketingDraft(event.id);
+    setMessage(null);
+    try {
+      if (action === "approve") {
+        await approveMarketingDraft(event.id);
+      } else {
+        await rejectMarketingDraft(event.id);
+      }
+      await onRefresh();
+      setMessage(`Marketing draft ${action === "approve" ? "approved" : "rejected"}.`);
+    } catch (error) {
+      setMessage(errorMessage(error));
+    } finally {
+      setIsReviewing(false);
     }
-    await onRefresh();
-    setIsReviewing(false);
   }
 
   return (
@@ -586,6 +619,7 @@ function MarketingTab({ event, onRefresh }: { event: EventSummary; onRefresh: ()
         </div>
       </CardHeader>
       <CardContent className="grid gap-4">
+        {message ? <ActionMessage message={message} /> : null}
         {event.marketingDraft ? (
           <>
             <Badge>{event.marketingDraft.approvalStatus}</Badge>
@@ -617,6 +651,15 @@ function PlaceholderTab({ icon: Icon, title, body }: { icon: typeof FileText; ti
       <CardContent className="text-sm text-muted-foreground">{body}</CardContent>
     </Card>
   );
+}
+
+function ActionMessage({ message }: { message: string }) {
+  const isError = /failed|error|invalid|unavailable|required|access/i.test(message);
+  return <p className={`rounded-md border p-3 text-sm ${isError ? "border-red-200 text-red-700" : "border-border text-muted-foreground"}`}>{message}</p>;
+}
+
+function errorMessage(error: unknown) {
+  return error instanceof Error ? error.message : "The request failed. Please try again.";
 }
 
 function SectionPreview({ title, section }: { title: string; section: Record<string, unknown> }) {

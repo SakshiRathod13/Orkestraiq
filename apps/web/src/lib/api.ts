@@ -183,7 +183,9 @@ async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed with status ${response.status}`);
+    const body = await response.json().catch(() => null) as { message?: string | string[] } | null;
+    const message = Array.isArray(body?.message) ? body.message.join(" ") : body?.message;
+    throw new Error(message ?? `API request failed with status ${response.status}`);
   }
 
   return response.json() as Promise<T>;

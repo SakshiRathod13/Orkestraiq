@@ -25,6 +25,8 @@ Rules:
 
 `PromptBriefExtractorService` remains a local deterministic intake extractor. Agent execution supports `AI_EXECUTION_MODE=provider` with `OPENAI_API_KEY`, `OPENAI_MODEL`, and optionally `OPENAI_BASE_URL`; the response is parsed as JSON and validated against the relevant Zod output schema. Leave `AI_EXECUTION_MODE=deterministic` for local development without provider credentials.
 
+The Landing Page, Registration Form, and Marketing dashboard controls are local structured generators today. They do not consume OpenAI credits. The Agents tab is the surface that uses the configured provider mode; extending provider-backed generation to those event assets is a future integration step.
+
 Milestone 3 agent services also run deterministically. The `AgentRun` table is the integration boundary for future OpenAI-compatible provider execution, retries, approval gates, and live activity streams.
 
 Public registration is stored locally in `Attendee` records. Email confirmation, CRM sync, calendar invites, and payment collection remain future integrations.
