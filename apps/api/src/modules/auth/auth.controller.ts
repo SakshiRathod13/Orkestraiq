@@ -33,7 +33,7 @@ export class AuthController {
 
   @Post("logout")
   logout(@Res({ passthrough: true }) response: CookieResponse) {
-    response.clearCookie(this.authService.getCookieName(), { httpOnly: true, sameSite: "lax" });
+    response.clearCookie(this.authService.getCookieName(), this.sessionCookieOptions());
     return { ok: true };
   }
 
@@ -42,11 +42,25 @@ export class AuthController {
 
   private setSession(response: CookieResponse, user: AuthenticatedUser) {
     response.cookie(this.authService.getCookieName(), this.authService.createSessionToken(user), {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: Number(process.env.AUTH_SESSION_DAYS ?? 7) * 86400000,
-      path: "/"
+      ...this.sessionCookieOptions(),
+      maxAge: Number(process.env.AUTH_SESSION_DAYS ?? 7) * 86400000
     });
+  }
+
+  private sessionCookieOptions() {
+    const production = process.env.NODE_ENV === "production";
+    const configuredSameSite = process.env.AUTH_COOKIE_SAME_SITE;
+    const sameSite = configuredSameSite === "none" || configuredSameSite === "strict" || configuredSameSite === "lax"
+      ? configuredSameSite
+      : production ? "none" : "lax";
+    const domain = process.env.AUTH_COOKIE_DOMAIN;
+
+    return {
+      httpOnly: true,
+      sameSite,
+      secure: production || sameSite === "none",
+      ...(domain ? { domain } : {}),
+      path: "/"
+    };
   }
 }

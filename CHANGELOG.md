@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added production deployment guidance, Railway service configuration, and production-safe API/session configuration.
 - Bound the local API server explicitly to a loopback host to make development startup reliable.
 - Replaced generic workspace placeholders with contextual operations pages for events, campaigns, attendees, payments, agents, templates, integrations, and organization settings.
 - Refreshed the command-center UI with responsive icon navigation, agent workflow states, and accessible motion.

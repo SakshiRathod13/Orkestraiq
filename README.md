@@ -132,6 +132,7 @@ npm run db:seed      # seed demo organization and events
 - [Integrations](docs/INTEGRATIONS.md)
 - [Decisions](docs/DECISIONS.md)
 - [Setup](docs/SETUP.md)
+- [Deployment](docs/DEPLOYMENT.md)
 - [Changelog](CHANGELOG.md)
 
 ## Development Principles
