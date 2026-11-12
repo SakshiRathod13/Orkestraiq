@@ -3,15 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 29% 97%;
-  --foreground: 220 28% 12%;
+  --background: 216 29% 96%;
+  --foreground: 222 36% 13%;
   --card: 0 0% 100%;
-  --card-foreground: 220 28% 12%;
-  --muted: 214 32% 91%;
-  --muted-foreground: 218 12% 38%;
-  --border: 214 24% 84%;
-  --primary: 217 91% 45%;
+  --card-foreground: 222 36% 13%;
+  --muted: 216 24% 91%;
+  --muted-foreground: 218 15% 43%;
+  --border: 216 22% 84%;
+  --primary: 221 76% 38%;
   --primary-foreground: 0 0% 100%;
+  --signal: 157 67% 36%;
+  --warning: 35 90% 48%;
 }
 
 * {
@@ -22,4 +24,108 @@ body {
   margin: 0;
   background: hsl(var(--background));
   color: hsl(var(--foreground));
+}
+
+::selection {
+  background: hsl(var(--primary) / 0.16);
+}
+
+.app-canvas {
+  background-color: hsl(var(--background));
+}
+
+.sidebar-surface {
+  background: hsl(222 38% 12%);
+  color: hsl(215 35% 95%);
+}
+
+.nav-link {
+  border: 1px solid transparent;
+  color: hsl(216 18% 72%);
+}
+
+.nav-link:hover {
+  background: hsl(216 30% 22%);
+  color: hsl(0 0% 100%);
+}
+
+.nav-link-active {
+  border-color: hsl(157 67% 36% / 0.35);
+  background: hsl(157 67% 36% / 0.18);
+  color: hsl(0 0% 100%);
+}
+
+.agent-orb {
+  position: relative;
+}
+
+.agent-orb::before,
+.agent-orb::after {
+  border: 1px solid hsl(var(--signal) / 0.55);
+  border-radius: 999px;
+  content: "";
+  inset: -5px;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.agent-orb::before {
+  animation: agent-ping 2.4s ease-out infinite;
+}
+
+.agent-orb::after {
+  animation: agent-ping 2.4s ease-out 1.2s infinite;
+}
+
+.agent-progress::after {
+  animation: signal-sweep 2.8s ease-in-out infinite;
+  background: hsl(var(--signal));
+  border-radius: inherit;
+  content: "";
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 28%;
+}
+
+.motion-enter {
+  animation: rise-in 0.5s both;
+}
+
+.motion-delay-1 {
+  animation-delay: 80ms;
+}
+
+.motion-delay-2 {
+  animation-delay: 160ms;
+}
+
+.motion-delay-3 {
+  animation-delay: 240ms;
+}
+
+@keyframes agent-ping {
+  0% { opacity: 0.8; transform: scale(0.7); }
+  75%, 100% { opacity: 0; transform: scale(1.5); }
+}
+
+@keyframes signal-sweep {
+  0%, 100% { opacity: 0.45; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(250%); }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
