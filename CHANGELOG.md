@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Bound the local API server explicitly to a loopback host to make development startup reliable.
+- Replaced generic workspace placeholders with contextual operations pages for events, campaigns, attendees, payments, agents, templates, integrations, and organization settings.
 - Refreshed the command-center UI with responsive icon navigation, agent workflow states, and accessible motion.
 - Added visible success and error feedback to landing page, registration form, and marketing generation controls.
 - Fixed NestJS dependency injection in the `tsx` development runtime so authentication, organization, event, and agent endpoints receive their required services.
